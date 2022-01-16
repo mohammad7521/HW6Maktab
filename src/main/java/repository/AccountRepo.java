@@ -8,6 +8,12 @@ import java.sql.Types;
 
 public class AccountRepo {
 
+
+    public AccountRepo() throws SQLException {
+        ConnectionProvider.setConnection();
+    }
+
+
     //CRUD
 
 
