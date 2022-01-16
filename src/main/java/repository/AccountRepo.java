@@ -1,55 +1,39 @@
 package repository;
 
 import connection.ConnectionProvider;
-import model.Account;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class AccountRepo {
-
-
-    public AccountRepo() throws SQLException, ClassNotFoundException {
-        ConnectionProvider.setConnection();
-    }
-
 
     //CRUD
 
 
     //add an account
-    public Account add (long initialDeposit,int clientID,int branchID) throws SQLException, ClassNotFoundException {
+    public boolean add(int balance,int clientID,int branchID) throws SQLException {
 
-        String insert="INSERT INTO account (balance,clientid,branchid) VALUES(?,?,?) RETURNING accountid";
+        String insert="INSERT INTO account (default,?,?,?)";
 
         PreparedStatement preparedStatement= ConnectionProvider.setConnection().prepareStatement(insert);
 
-        Account account=new Account();
-        account.setBalance(initialDeposit);
-        account.setBranchID(branchID);
-        account.setClientID(clientID);
-
-        preparedStatement.setLong(1,initialDeposit);
+        preparedStatement.setInt(1,balance);
         preparedStatement.setInt(2,clientID);
         preparedStatement.setInt(3,branchID);
 
 
-        ResultSet resultSet=preparedStatement.executeQuery();
-
-        if (resultSet.next() && resultSet!=null){
-            account.setId(resultSet.getInt(1));
-        }
+        int insertCheck=preparedStatement.executeUpdate();
 
         preparedStatement.close();
-        return account;
 
+        return insertCheck>0;
     }
 
 
 
     //remove an account
-    public boolean remove(int accountID) throws SQLException, ClassNotFoundException {
+    public boolean remove(int accountID) throws SQLException {
 
         String remove="DELETE FROM account WHERE accountID=?";
 
@@ -67,15 +51,14 @@ public class AccountRepo {
 
 
 
-    //balance addition based on credit card number
-    public boolean balanceAddition(long amount,long CCNumber) throws SQLException, ClassNotFoundException {
-        String update="update account set balance=balance+(?) from creditCard where account.accountid=(\n" +
-                "    select creditcard.accountID from creditcard where ccNumber=(?))";
+    //update balance of an account
+    public boolean updateBalance(int balance) throws SQLException {
+        String update="UPDATE account SET balance=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
 
-        preparedStatement.setLong(1,amount);
-        preparedStatement.setLong(2,CCNumber);
+        preparedStatement.setInt(1,balance);
+
         int updateCheck=preparedStatement.executeUpdate();
 
         preparedStatement.close();
@@ -85,113 +68,5 @@ public class AccountRepo {
 
 
 
-
-    //balance deduction based on credit card number
-    public boolean balanceDeduction(long amount,long CCNumber) throws SQLException, ClassNotFoundException {
-        String update="update account set balance=balance-(?) from creditCard where account.accountid=(\n" +
-                "    select creditcard.accountID from creditcard where ccNumber=(?))";
-
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
-
-        preparedStatement.setLong(1,amount+6000);
-        preparedStatement.setLong(2,CCNumber);
-        int updateCheck=preparedStatement.executeUpdate();
-
-        preparedStatement.close();
-
-        return updateCheck >0;
-    }
-
-
-
-    //balance addition based on account id
-    public boolean balanceAddition(long amount,int accountID) throws SQLException, ClassNotFoundException {
-        String update="update account set balance=balance+(?) where accountid=(?)";
-
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
-
-        preparedStatement.setLong(1,amount);
-        preparedStatement.setLong(2,accountID);
-        int updateCheck=preparedStatement.executeUpdate();
-
-        preparedStatement.close();
-
-        return updateCheck >0;
-    }
-
-
-
-
-    //balance deduction based on account id
-    public boolean balanceDeduction(long amount,int accountID) throws SQLException, ClassNotFoundException {
-        String update="update account set balance=balance-(?) where accountid=(?)";
-
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
-
-        preparedStatement.setLong(1,amount);
-        preparedStatement.setLong(2,accountID);
-        int updateCheck=preparedStatement.executeUpdate();
-
-        preparedStatement.close();
-
-        return updateCheck >0;
-    }
-
-
-
-
-
-
-    //show account info based on account id
-    public  Account showInfo(int accountID) throws SQLException, ClassNotFoundException {
-        String showInfo="SELECT * FROM account inner join creditcard on account.accountID=creditCard.accountID where Account.accountID=(?)";
-
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
-        preparedStatement.setInt(1,accountID);
-        ResultSet resultSet=preparedStatement.executeQuery();
-
-        Account account=new Account();
-
-        while (resultSet.next()){
-            int id=resultSet.getInt(1);
-            long balance=resultSet.getLong(2);
-            int clientID=resultSet.getInt(3);
-            int branchID=resultSet.getInt(4);
-            long creditCardNumber=resultSet.getLong(5);
-
-
-            account.setId(id);
-            account.setBalance(balance);
-            account.setClientID(clientID);
-            account.setBranchID(branchID);
-            account.setCreditCardNumber(creditCardNumber);
-        }
-
-        return account;
-    }
-
-
-
-    //show account info based on credit card number
-    public Account showInfoBasedOnCC(long creditCardNumber) throws SQLException, ClassNotFoundException {
-        String showInfo="select * from account inner join creditcard on account.accountid=creditcard.accountID where ccNumber=(?)";
-
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
-        preparedStatement.setLong(1,creditCardNumber);
-        ResultSet resultSet=preparedStatement.executeQuery();
-
-        Account account=new Account();
-
-        while (resultSet.next()){
-            int id=resultSet.getInt(1);
-            long balance=resultSet.getLong(2);
-
-
-            account.setId(id);
-            account.setBalance(balance);
-        }
-
-        return account;
-    }
 
 }

@@ -10,4 +10,11 @@ public class Account {
     private Branch branch;
 
 
+    //constructors
+
+
+    public Account(int id, int balance) {
+        this.id = id;
+        this.balance = balance;
+    }
 }
