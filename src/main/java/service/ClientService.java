@@ -5,6 +5,7 @@ import repository.AccountRepo;
 import repository.ClientRepo;
 
 import java.sql.SQLException;
+import java.text.ParseException;
 
 public class ClientService {
 
@@ -12,11 +13,12 @@ public class ClientService {
 
 
 
-
     //add new client
-    public static boolean addNew (String firstName,String lastName,char gender,String address) throws SQLException {
+    public static void addNew (long nationalCode,String firstName,String lastName,char gender,String address,int initialDeposit,int branchID) throws SQLException, ParseException {
 
-        return clientRepo.add(firstName,lastName,address,gender);
+        Client newClient=clientRepo.add(firstName,lastName,address,gender,nationalCode);
+        AccountService.addNew(newClient.getId(),branchID,initialDeposit);
+
     }
 
 
@@ -39,7 +41,15 @@ public class ClientService {
         if (client==null){
             return false;
         }
-
         else return clientRepo.update(clientID,firstName,lastName,address,gender);
+    }
+
+
+    //show client info
+    public Client showInfo(int clientID) throws SQLException {
+        Client client=null;
+        client=clientRepo.showInfo(clientID);
+
+        return client;
     }
 }

@@ -19,22 +19,28 @@ public class AccountRepo {
 
 
     //add an account
-    public boolean add(int balance,int clientID,int branchID) throws SQLException {
+    public Account add (int initialDeposit,int clientID,int branchID) throws SQLException {
 
         String insert="INSERT INTO account (default,?,?,?)";
 
         PreparedStatement preparedStatement= ConnectionProvider.setConnection().prepareStatement(insert);
 
-        preparedStatement.setInt(1,balance);
+        preparedStatement.setInt(1,initialDeposit);
         preparedStatement.setInt(2,clientID);
         preparedStatement.setInt(3,branchID);
 
 
-        int insertCheck=preparedStatement.executeUpdate();
+        ResultSet resultSet=preparedStatement.executeQuery();
+        Account newAccount=null;
+
+        while (resultSet.next()){
+            newAccount.setId(resultSet.getInt(1));
+            newAccount.setBalance(resultSet.getInt(2));
+        }
 
         preparedStatement.close();
+        return newAccount;
 
-        return insertCheck>0;
     }
 
 
@@ -123,7 +129,6 @@ public class AccountRepo {
 
 
     //show account info based on credit card number
-
     public Account showInfoBasedOnCC(long creditCardNumber) throws SQLException {
         String showInfo="select * from account inner join account a on Account.accountID = a.accountid where a.accountID=(?)";
 

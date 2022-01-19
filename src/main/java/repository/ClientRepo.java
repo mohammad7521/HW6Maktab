@@ -23,22 +23,31 @@ public class ClientRepo {
 
 
     //create new client
-    public boolean add(String firstName,String lastName,String address,char gender) throws SQLException {
+    public Client add(String firstName,String lastName,String address,char gender,long nationalCode) throws SQLException {
 
-        String insert="INSERT INTO client (default,?,?,?,?)";
+        String insert="INSERT INTO client (default,?,?,?,?,?)";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(insert);
 
-        preparedStatement.setString(1,firstName);
-        preparedStatement.setString(2,lastName);
-        preparedStatement.setString(3,address);
-        preparedStatement.setObject(4, Types.CHAR,gender);
+        preparedStatement.setLong(1,nationalCode);
+        preparedStatement.setString(2,firstName);
+        preparedStatement.setString(3,lastName);
+        preparedStatement.setString(4,address);
+        preparedStatement.setObject(5, Types.CHAR,gender);
 
-        int insertCheck=preparedStatement.executeUpdate();
+        ResultSet resultSet=preparedStatement.executeQuery();
+        Client client=null;
 
-        preparedStatement.close();
-
-        return insertCheck>0;
+        while (resultSet.next()){
+            client.setId(resultSet.getInt(1));
+            client.setNationalCode(resultSet.getLong(2));
+            client.setFirstName(resultSet.getString(3));
+            client.setLastName(resultSet.getString(4));
+            client.setAddress(resultSet.getString(5));
+            String genderAsString=(resultSet.getString(6));
+            client.setGender(genderAsString.charAt(0));
+        }
+        return client;
     }
 
 

@@ -6,6 +6,7 @@ public class Client {
 
     //attributes
     private int id;
+    private long nationalCode;
     private String firstName;
     private String lastName;
     private String address;
@@ -21,4 +22,64 @@ public class Client {
         this.account = account;
     }
 
+
+    //setters
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setNationalCode(long nationalCode){
+        this.nationalCode=nationalCode;
+    }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
+    }
+
+    public void setAccount(List<Account> account) {
+        this.account = account;
+    }
+
+
+    //getters
+
+    public int getId() {
+        return id;
+    }
+
+    public long getNationalCode() {
+        return nationalCode;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public List<Account> getAccount() {
+        return account;
+    }
 }

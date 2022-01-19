@@ -4,6 +4,7 @@ import model.Account;
 import model.BranchBoss;
 import repository.AccountRepo;
 import java.sql.SQLException;
+import java.text.ParseException;
 
 public class AccountService {
 
@@ -11,15 +12,16 @@ public class AccountService {
 
 
     //add a new account
-    public boolean addNew(int clientID,int branchID,int initialDeposit) throws SQLException {
+    public static void addNew(int clientID,int branchID,int initialDeposit) throws SQLException, ParseException {
 
-        return accountRepo.add(initialDeposit,clientID,branchID);
+        Account account=accountRepo.add(initialDeposit,clientID,branchID);
+        CreditCardService.addNew(account.getId());
     }
 
 
 
     //remove an account
-    public boolean remove(int accountID) throws SQLException {
+    public static boolean remove(int accountID) throws SQLException {
 
         Account account=accountRepo.showInfo(accountID);
 
@@ -46,4 +48,5 @@ public class AccountService {
         }
         else return false;
     }
+
 }

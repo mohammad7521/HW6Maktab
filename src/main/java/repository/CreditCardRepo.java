@@ -41,7 +41,6 @@ public class CreditCardRepo {
 
             String generate = "INSERT INTO creditcard (?,?,?,?,?)";
 
-
             PreparedStatement preparedStatement = ConnectionProvider.setConnection().prepareStatement(generate);
 
             preparedStatement.setLong(1, ccNumber);

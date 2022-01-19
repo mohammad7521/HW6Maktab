@@ -10,11 +10,14 @@ public class Account {
     private Branch branch;
 
 
+
     public Account(int id, int balance) {
         this.id = id;
         this.balance = balance;
     }
 
+    public Account() {
+    }
 
     //setters
     public void setId(int id) {
