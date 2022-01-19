@@ -1,37 +1,29 @@
 package service;
 
+import model.Branch;
 import model.BranchBoss;
 import repository.BossRepo;
 
+import java.sql.Date;
 import java.sql.SQLException;
 
 public class BossService {
 
     private static BossRepo bossRepo;
 
-    static {
-        try {
-            bossRepo = new BossRepo();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     //add new boss
-    public static boolean addNew(String firstName, String lastName,String address, int branchID) throws SQLException, ClassNotFoundException {
+    public static boolean addNew(String firstName, String lastName, char gender, Date birthDate, int branchID) throws SQLException {
 
-        return bossRepo.add(firstName,lastName,address,branchID);
+        return bossRepo.add(firstName,lastName,gender,birthDate,branchID);
     }
 
 
     //remove a boss
-    public static boolean remove(int bossID) throws SQLException, ClassNotFoundException {
+    public static boolean remove(int bossID) throws SQLException {
 
-        BranchBoss branchBoss;
-        branchBoss=bossRepo.showInfo(bossID);
+        BranchBoss branchBoss=bossRepo.showInfo(bossID);
 
         if(branchBoss==null){
             return false;
@@ -42,14 +34,14 @@ public class BossService {
 
 
     //modify a boss
-    public static boolean modify(int bossID,String firstName, String lastName, String address,int branchID) throws SQLException, ClassNotFoundException {
+    public static boolean modify(int bossID,String firstName, String lastName, char gender, Date birthDate) throws SQLException {
 
         BranchBoss branchBoss=bossRepo.showInfo(bossID);
 
         if(branchBoss==null){
             return false;
         }
-        return bossRepo.update(bossID,firstName,lastName,address,branchID);
+        return bossRepo.update(bossID,firstName,lastName,gender,birthDate);
 
     }
 }

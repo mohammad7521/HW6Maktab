@@ -1,9 +1,11 @@
 package repository;
 
 import connection.ConnectionProvider;
+import model.Branch;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class BranchRepo {
@@ -67,5 +69,30 @@ public class BranchRepo {
         preparedStatement.close();
 
         return updateCheck >0;
+    }
+
+
+    //show branch info
+    public Branch showInfo (int branchID) throws SQLException {
+        String showInfo="SELECT * FROM branch where branchid=?";
+
+        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
+        preparedStatement.setInt(1,branchID);
+        ResultSet resultSet=preparedStatement.executeQuery();
+
+        Branch branch=null;
+
+        while (resultSet.next()){
+            int id=resultSet.getInt(1);
+            String name=resultSet.getString(2);
+            String address=resultSet.getString(3);
+
+            branch.setId(id);
+            branch.setName(name);
+            branch.setAddress(address);
+
+        }
+
+        return branch;
     }
 }

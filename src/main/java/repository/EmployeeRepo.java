@@ -1,9 +1,12 @@
 package repository;
 
 import connection.ConnectionProvider;
+import model.Branch;
+import model.Employee;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class EmployeeRepo {
@@ -72,5 +75,35 @@ public class EmployeeRepo {
         preparedStatement.close();
 
         return updateCheck >0;
+    }
+
+
+    //show employee info
+    public Employee showInfo(int employeeID) throws SQLException {
+        String showInfo="SELECT * FROM employee where employeeid=?";
+
+        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
+        preparedStatement.setInt(1,employeeID);
+        ResultSet resultSet=preparedStatement.executeQuery();
+
+        Employee employee=null;
+
+        while (resultSet.next()){
+            int id=resultSet.getInt(1);
+            String firstName=resultSet.getString(2);
+            String lastName=resultSet.getString(3);
+            String gender=resultSet.getString(4);
+            String address=resultSet.getString(5);
+
+
+            employee.setId(id);
+            employee.setFirstName(firstName);
+            employee.setLastName(lastName);
+            employee.setGender(gender.charAt(0));
+            employee.setAddress(address);
+
+        }
+
+        return employee;
     }
 }

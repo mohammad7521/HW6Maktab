@@ -10,11 +10,28 @@ public class Account {
     private Branch branch;
 
 
-    //constructors
-
-
     public Account(int id, int balance) {
         this.id = id;
         this.balance = balance;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public void setCreditCard(CreditCard creditCard) {
+        this.creditCard = creditCard;
+    }
+
+    public void setBranch(Branch branch) {
+        this.branch = branch;
     }
 }

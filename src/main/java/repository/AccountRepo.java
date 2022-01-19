@@ -1,10 +1,11 @@
 package repository;
 
 import connection.ConnectionProvider;
+import model.Account;
+import model.BranchBoss;
+import model.Client;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 
 public class AccountRepo {
 
@@ -73,6 +74,31 @@ public class AccountRepo {
     }
 
 
+
+
+
+
+    //show account info
+    public static Account showInfo(int accountID) throws SQLException {
+        String showInfo="SELECT * FROM account where accountid=?";
+
+        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
+        preparedStatement.setInt(1,accountID);
+        ResultSet resultSet=preparedStatement.executeQuery();
+
+        Account account=null;
+
+        while (resultSet.next()){
+            int id=resultSet.getInt(1);
+            int balance=resultSet.getInt(2);
+
+
+            account.setId(id);
+            account.setBalance(balance);
+        }
+
+        return account;
+    }
 
 
 }

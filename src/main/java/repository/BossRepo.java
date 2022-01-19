@@ -1,9 +1,12 @@
 package repository;
 
 import connection.ConnectionProvider;
+import model.BranchBoss;
+import model.Employee;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
@@ -77,5 +80,34 @@ public class BossRepo {
         preparedStatement.close();
 
         return updateCheck >0;
+    }
+
+
+    //show info of a boss
+    public BranchBoss showInfo(int bossID) throws SQLException {
+        String showInfo="SELECT * FROM boss where bossid=?";
+
+        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
+        preparedStatement.setInt(1,bossID);
+        ResultSet resultSet=preparedStatement.executeQuery();
+
+        BranchBoss branchBoss=null;
+
+        while (resultSet.next()){
+            int id=resultSet.getInt(1);
+            String firstName=resultSet.getString(2);
+            String lastName=resultSet.getString(3);
+            String gender=resultSet.getString(4);
+            Date birthDate=resultSet.getDate(5);
+            int branchID=resultSet.getInt(6);
+
+            branchBoss.setId(id);
+            branchBoss.setFirstName(firstName);
+            branchBoss.setLastName(lastName);
+            branchBoss.setGender(gender.charAt(0));
+            branchBoss.setBirthDay(birthDate);
+        }
+
+        return branchBoss;
     }
 }
