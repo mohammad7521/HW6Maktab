@@ -58,14 +58,34 @@ public class AccountRepo {
 
 
 
-    //update balance of an account
-    public boolean updateBalance(int balance) throws SQLException {
-        String update="UPDATE account SET balance=?";
+    //balance addition based on credit card number
+    public boolean balanceAddition(int amount,long CCNumber) throws SQLException {
+        String update="update account set balance=balance+(?) from creditCard where account.accountid=(\n" +
+                "    select creditCard.accountID from creditCard where ccnumber=?);";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
 
-        preparedStatement.setInt(1,balance);
+        preparedStatement.setInt(1,amount);
+        preparedStatement.setLong(2,CCNumber);
+        int updateCheck=preparedStatement.executeUpdate();
 
+        preparedStatement.close();
+
+        return updateCheck >0;
+    }
+
+
+
+
+    //balance deduction based on credit card number
+    public boolean balanceDeduction(int amount,long CCNumber) throws SQLException {
+        String update="update account set balance=balance-(?) from creditCard where account.accountid=(\n" +
+                "    select creditCard.accountID from creditCard where ccnumber=?);";
+
+        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
+
+        preparedStatement.setInt(1,amount);
+        preparedStatement.setLong(2,CCNumber);
         int updateCheck=preparedStatement.executeUpdate();
 
         preparedStatement.close();
@@ -78,8 +98,8 @@ public class AccountRepo {
 
 
 
-    //show account info
-    public static Account showInfo(int accountID) throws SQLException {
+    //show account info based on account id
+    public  Account showInfo(int accountID) throws SQLException {
         String showInfo="SELECT * FROM account where accountid=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
@@ -100,5 +120,29 @@ public class AccountRepo {
         return account;
     }
 
+
+
+    //show account info based on credit card number
+
+    public Account showInfoBasedOnCC(long creditCardNumber) throws SQLException {
+        String showInfo="select * from account inner join account a on Account.accountID = a.accountid where a.accountID=(?)";
+
+        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
+        preparedStatement.setLong(1,creditCardNumber);
+        ResultSet resultSet=preparedStatement.executeQuery();
+
+        Account account=null;
+
+        while (resultSet.next()){
+            int id=resultSet.getInt(1);
+            int balance=resultSet.getInt(2);
+
+
+            account.setId(id);
+            account.setBalance(balance);
+        }
+
+        return account;
+    }
 
 }

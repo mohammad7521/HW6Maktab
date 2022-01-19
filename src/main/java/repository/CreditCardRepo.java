@@ -28,34 +28,49 @@ public class CreditCardRepo {
     //generate a credit card
     public boolean generate (long ccNumber, int cvv2,Date expireDate,int password,int accountID) throws SQLException {
 
-        String generate="INSERT INTO creditcard (?,?,?,?,?)";
 
-        PreparedStatement preparedStatement= ConnectionProvider.setConnection().prepareStatement(generate);
+        //checking if the cc is and cvv2 is not duplicate
+        String checkCC = "select * from creditCard where ccNumber=?";
+        String checkCVV2 = "select * from creditCard where cvv2=?";
 
-        preparedStatement.setLong(1,ccNumber);
-        preparedStatement.setInt(2,cvv2);
-        preparedStatement.setDate(3,expireDate);
-        preparedStatement.setInt(4,password);
-        preparedStatement.setInt(5,accountID);
+        PreparedStatement checkCCStatement = ConnectionProvider.setConnection().prepareStatement(checkCC);
+        PreparedStatement checkCVV2Statement = ConnectionProvider.setConnection().prepareStatement(checkCVV2);
+
+        boolean checkInsert=false;
+        if (checkCCStatement.executeUpdate() < 1 && checkCVV2Statement.executeUpdate() < 1) {
+
+            String generate = "INSERT INTO creditcard (?,?,?,?,?)";
 
 
-        int insertCheck=preparedStatement.executeUpdate();
+            PreparedStatement preparedStatement = ConnectionProvider.setConnection().prepareStatement(generate);
 
-        preparedStatement.close();
+            preparedStatement.setLong(1, ccNumber);
+            preparedStatement.setInt(2, cvv2);
+            preparedStatement.setDate(3, expireDate);
+            preparedStatement.setInt(4, password);
+            preparedStatement.setInt(5, accountID);
+            preparedStatement.executeUpdate();
 
-        return insertCheck>0;
+            if(preparedStatement.executeUpdate()>0){
+                checkInsert=true;
+            }
+
+            preparedStatement.close();
+        }
+
+        return checkInsert;
     }
 
 
 
     //remove a credit card
-    public boolean remove(int ccNumber) throws SQLException {
+    public boolean remove(long ccNumber) throws SQLException {
 
         String remove="DELETE FROM creditcard WHERE ccnumber=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(remove);
 
-        preparedStatement.setInt(1,ccNumber);
+        preparedStatement.setLong(1,ccNumber);
 
         int removeCheck=preparedStatement.executeUpdate();
 
@@ -85,12 +100,12 @@ public class CreditCardRepo {
 
 
     //show credit card info
-    public CreditCard showInfo(int ccNumber) throws SQLException, ParseException {
+    public CreditCard showInfo(long ccNumber) throws SQLException, ParseException {
         String select="select * from creditcard  where ccnumber=?;";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(select);
 
-        preparedStatement.setInt(1,ccNumber);
+        preparedStatement.setLong(1,ccNumber);
 
         ResultSet resultSet=preparedStatement.executeQuery();
 

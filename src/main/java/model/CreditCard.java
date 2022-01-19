@@ -23,8 +23,8 @@ public class CreditCard {
         Date returnDate=null;
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
-        String expirationString="00/00/0004";
-        Date expiration=formatter.parse(expirationString);
+        String expirationDefault="00/00/0004";
+        Date expiration=formatter.parse(expirationDefault);
         long sum=date.getTime()+expiration.getTime();
         Date sumDate=new Date(sum);
         returnDate=sumDate;

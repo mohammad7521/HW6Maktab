@@ -15,6 +15,8 @@ public class Account {
         this.balance = balance;
     }
 
+
+    //setters
     public void setId(int id) {
         this.id = id;
     }
@@ -33,5 +35,29 @@ public class Account {
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+
+
+    //getters
+
+    public int getId() {
+        return id;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public CreditCard getCreditCard() {
+        return creditCard;
+    }
+
+    public Branch getBranch() {
+        return branch;
     }
 }

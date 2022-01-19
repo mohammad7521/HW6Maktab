@@ -17,14 +17,33 @@ public class AccountService {
     }
 
 
+
     //remove an account
     public boolean remove(int accountID) throws SQLException {
 
-        Account account=AccountRepo.showInfo(accountID);
+        Account account=accountRepo.showInfo(accountID);
 
         if(account==null){
             return false;
         }
         else return accountRepo.remove(accountID);
+    }
+
+
+
+    //balance addition
+    public static boolean addition(int amount,long ccNumber) throws SQLException {
+        return accountRepo.balanceAddition(amount,ccNumber);
+    }
+
+
+    //balance deduction
+    public static boolean deduction(int amount,long ccNumber) throws SQLException {
+        Account account = accountRepo.showInfoBasedOnCC(ccNumber);
+
+        if (account.getBalance() > amount) {
+            return accountRepo.balanceDeduction(amount,ccNumber);
+        }
+        else return false;
     }
 }
