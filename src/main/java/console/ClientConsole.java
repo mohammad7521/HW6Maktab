@@ -21,7 +21,8 @@ public class ClientConsole {
             System.out.println("1-Show accounts list");
             System.out.println("2-create a transaction");
             System.out.println("3-show All transactions");
-            System.out.println("4-add new account");
+            System.out.println("4-show transaction based on specific date");
+            System.out.println("5-Change password");
             System.out.println("0-exit");
 
 
@@ -61,8 +62,17 @@ public class ClientConsole {
                         System.out.println("enter starting date in the following format");
                         System.out.println("yyyy-mm-dd");
                         Date startDate= Date.valueOf(scanner.next());
+                        System.out.println("enter the account id");
                         accountID= scanner.nextInt();
                         ClientService.showTransactionList(accountID,startDate);
+                        break;
+                    case  5:
+                        ClientService.showAccountList(id);
+                        System.out.println("enter the account id");
+                        accountID=scanner.nextInt();
+                        int oldPass=scanner.nextInt();
+                        int newPass=scanner.nextInt();
+                        ClientService.changeCCPassword(accountID,oldPass,newPass);
 //                    case 0:
 //                        flag=false;
 //                        break;

@@ -45,24 +45,19 @@ public class CreditCardService {
 
 
     //change password of a credit card
-    public static boolean changePassword (int newPassword,int ccNumber,int oldPassword) throws SQLException, ParseException, ClassNotFoundException {
+    public static boolean changeCCPassword(int newPassword,int oldPassword,long ccNumber) throws SQLException, ParseException, ClassNotFoundException {
 
-        CreditCard cc=creditCardRepo.showInfo(ccNumber);
-        if (cc==null){
-            return false;
+        boolean flag=false;
+        CreditCard creditCard=showInfo(ccNumber);
+        int password=creditCard.getPasscode();
+
+        if (password==oldPassword) {
+            creditCardRepo.changePassword(newPassword, ccNumber);
+            flag=true;
         }
-        else if(cc.getPasscode()==oldPassword) return creditCardRepo.changePassword(newPassword,ccNumber);
-        else return false;
+        return flag;
     }
 
-
-
-    //check for password
-//    public static boolean checkPassWord(long ccNumber,int password) throws SQLException, ParseException {
-//        CreditCard cc = creditCardRepo.showInfo(ccNumber);
-//
-//        return password == cc.getPasscode();
-//    }
 
 
 

@@ -119,4 +119,16 @@ public class ClientService {
         }
     }
 
+
+
+    //change credit card password
+    public static void changeCCPassword(int accountID,int oldPassword,int newPassword) throws SQLException, ClassNotFoundException, ParseException {
+
+        Account account=AccountService.showInfo(accountID);
+        long ccNumber=account.getCreditCardNumber();
+
+        if (CreditCardService.changeCCPassword(newPassword,oldPassword,ccNumber)){
+            System.out.println("password changed successfully");
+        }else System.out.println("old password is wrong!");
+    }
 }
