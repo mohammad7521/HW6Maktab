@@ -6,7 +6,6 @@ public class Client {
 
     //attributes
     private int id;
-    private long nationalCode;
     private String firstName;
     private String lastName;
     private String address;
@@ -22,6 +21,8 @@ public class Client {
         this.account = account;
     }
 
+    public Client() {
+    }
 
     //setters
 
@@ -29,9 +30,6 @@ public class Client {
         this.id = id;
     }
 
-    public void setNationalCode(long nationalCode){
-        this.nationalCode=nationalCode;
-    }
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -57,10 +55,6 @@ public class Client {
 
     public int getId() {
         return id;
-    }
-
-    public long getNationalCode() {
-        return nationalCode;
     }
 
     public String getFirstName() {

@@ -13,7 +13,7 @@ import java.util.List;
 public class ClientRepo {
 
 
-    public ClientRepo() throws SQLException {
+    public ClientRepo() throws SQLException, ClassNotFoundException {
         ConnectionProvider.setConnection();
 
     }
@@ -23,29 +23,27 @@ public class ClientRepo {
 
 
     //create new client
-    public Client add(String firstName,String lastName,String address,char gender,long nationalCode) throws SQLException {
+    public Client add(String firstName,String lastName,String address,char gender) throws SQLException, ClassNotFoundException {
 
-        String insert="INSERT INTO client (default,?,?,?,?,?)";
+        String insert="INSERT INTO client (firstname,lastname,address,gender) VALUES (?,?,?,?) RETURNING clientid";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(insert);
 
-        preparedStatement.setLong(1,nationalCode);
-        preparedStatement.setString(2,firstName);
-        preparedStatement.setString(3,lastName);
-        preparedStatement.setString(4,address);
-        preparedStatement.setObject(5, Types.CHAR,gender);
+        Client client=new Client();
+        client.setFirstName(firstName);
+        client.setLastName(lastName);
+        client.setAddress(address);
+        client.setGender(gender);
+        preparedStatement.setString(1,firstName);
+        preparedStatement.setString(2,lastName);
+        preparedStatement.setString(3,address);
+        preparedStatement.setString(4,String.valueOf(gender));
+
 
         ResultSet resultSet=preparedStatement.executeQuery();
-        Client client=null;
 
-        while (resultSet.next()){
+        if (resultSet.next() && resultSet!=null){
             client.setId(resultSet.getInt(1));
-            client.setNationalCode(resultSet.getLong(2));
-            client.setFirstName(resultSet.getString(3));
-            client.setLastName(resultSet.getString(4));
-            client.setAddress(resultSet.getString(5));
-            String genderAsString=(resultSet.getString(6));
-            client.setGender(genderAsString.charAt(0));
         }
         return client;
     }
@@ -53,7 +51,7 @@ public class ClientRepo {
 
 
     //remove a client
-    public boolean remove(int clientID) throws SQLException {
+    public boolean remove(int clientID) throws SQLException, ClassNotFoundException {
         String remove="DELETE FROM client WHERE clientID=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(remove);
@@ -71,7 +69,7 @@ public class ClientRepo {
 
 
     //update info of a client
-    public boolean update(int clientID,String firstName,String lastName,String address,char gender) throws SQLException {
+    public boolean update(int clientID,String firstName,String lastName,String address,char gender) throws SQLException, ClassNotFoundException {
         String update="UPDATE client SET firstName=?,lastName=?,address,=?,gender=? WHERE clientID=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
@@ -92,8 +90,8 @@ public class ClientRepo {
 
 
     //show client info
-    public Client showInfo(int clientID) throws SQLException {
-        String select="select * from client inner join Account A on client.clientid = A.clientID where client.clientid=?;";
+    public Client showInfo(int clientID) throws SQLException, ClassNotFoundException {
+        String select="select * from client inner join account on client.clientID=account.clientID where client.clientid=(?)";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(select);
 
@@ -101,7 +99,7 @@ public class ClientRepo {
 
         ResultSet resultSet=preparedStatement.executeQuery();
 
-        Client client=null;
+        Client client=new Client();
         Account account;
         List<Account> accountList=new ArrayList<>();
 
@@ -116,14 +114,16 @@ public class ClientRepo {
             int accountID=resultSet.getInt(6);
             int balance=resultSet.getInt(7);
 
+            client.setId(id);
+            client.setFirstName(firstName);
+            client.setLastName(lastName);
+            client.setAddress(address);
+            client.setGender(charGender);
             account=new Account(accountID,balance);
-
             accountList.add(account);
-
-            client = new Client(id, firstName, lastName, address,charGender,accountList);
         }
+        client.setAccount(accountList);
         preparedStatement.close();
-
         return client;
     }
 

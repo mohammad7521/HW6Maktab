@@ -10,16 +10,16 @@ import java.sql.SQLException;
 
 public class BranchRepo {
 
-    public BranchRepo() throws SQLException {
+    public BranchRepo() throws SQLException, ClassNotFoundException {
         ConnectionProvider.setConnection();
     }
 
 
 
     //add a branch
-    public boolean add(String name,String address) throws SQLException {
+    public boolean add(String name,String address) throws SQLException, ClassNotFoundException {
 
-        String insert="INSERT INTO branch (default,?,?)";
+        String insert="INSERT INTO branch (name,address) values(?,?)";
 
         PreparedStatement preparedStatement= ConnectionProvider.setConnection().prepareStatement(insert);
 
@@ -37,9 +37,9 @@ public class BranchRepo {
 
 
     //remove a branch
-    public boolean remove(int branchID) throws SQLException {
+    public boolean remove(int branchID) throws SQLException, ClassNotFoundException {
 
-        String remove="DELETE FROM branch WHERE branchid=?";
+        String remove="DELETE FROM branch WHERE branchid=(?)";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(remove);
 
@@ -55,7 +55,7 @@ public class BranchRepo {
 
 
     //update info of a branch
-    public boolean update(int branchID,String name,String address) throws SQLException {
+    public boolean update(int branchID,String name,String address) throws SQLException, ClassNotFoundException {
         String update="UPDATE branch SET name=?,address=? WHERE branchid=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
@@ -73,14 +73,14 @@ public class BranchRepo {
 
 
     //show branch info
-    public Branch showInfo (int branchID) throws SQLException {
-        String showInfo="SELECT * FROM branch where branchid=?";
+    public Branch showInfo (int branchID) throws SQLException, ClassNotFoundException {
+        String showInfo="SELECT * FROM branch where branchid=(?)";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
         preparedStatement.setInt(1,branchID);
         ResultSet resultSet=preparedStatement.executeQuery();
 
-        Branch branch=null;
+        Branch branch=new Branch();
 
         while (resultSet.next()){
             int id=resultSet.getInt(1);
@@ -95,4 +95,7 @@ public class BranchRepo {
 
         return branch;
     }
+
+
+
 }

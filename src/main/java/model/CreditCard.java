@@ -16,20 +16,22 @@ public class CreditCard {
     private int passcode;
     private Account account;
     private Date expireDate;
+    private int wrongPasswordEntries=0;
 
 
-    private static Date calculateExpiration() throws ParseException {
+    private static java.sql.Date calculateExpiration() throws ParseException {
 
-        Date returnDate=null;
+        Date returnDate;
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date date = new Date();
-        String expirationDefault="00/00/0004";
+        String expirationDefault="00/00/1974";
         Date expiration=formatter.parse(expirationDefault);
         long sum=date.getTime()+expiration.getTime();
         Date sumDate=new Date(sum);
         returnDate=sumDate;
 
-        return returnDate;
+        java.sql.Date sqlDate=new java.sql.Date(returnDate.getTime());
+        return sqlDate;
     }
 
 
@@ -55,6 +57,10 @@ public class CreditCard {
 
     //getters
 
+    public int getWrongPasswordEntries(){
+        return wrongPasswordEntries;
+    }
+
     public long getCcNumber() {
         return ccNumber;
     }
@@ -78,6 +84,10 @@ public class CreditCard {
 
 
     //setters
+
+    public void setWrongPasswordEntries(int entries){
+        this.wrongPasswordEntries=entries;
+    }
 
     public void setCcNumber(long ccNumber) {
         this.ccNumber = ccNumber;

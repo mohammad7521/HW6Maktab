@@ -15,7 +15,7 @@ import java.util.List;
 
 public class CreditCardRepo {
 
-    public CreditCardRepo() throws SQLException {
+    public CreditCardRepo() throws SQLException, ClassNotFoundException {
         ConnectionProvider.setConnection();
     }
 
@@ -26,20 +26,10 @@ public class CreditCardRepo {
 
 
     //generate a credit card
-    public boolean generate (long ccNumber, int cvv2,Date expireDate,int password,int accountID) throws SQLException {
+    public boolean generate (long ccNumber, int cvv2,Date expireDate,int password,int accountID) throws SQLException, ClassNotFoundException {
 
-
-        //checking if the cc is and cvv2 is not duplicate
-        String checkCC = "select * from creditCard where ccNumber=?";
-        String checkCVV2 = "select * from creditCard where cvv2=?";
-
-        PreparedStatement checkCCStatement = ConnectionProvider.setConnection().prepareStatement(checkCC);
-        PreparedStatement checkCVV2Statement = ConnectionProvider.setConnection().prepareStatement(checkCVV2);
-
-        boolean checkInsert=false;
-        if (checkCCStatement.executeUpdate() < 1 && checkCVV2Statement.executeUpdate() < 1) {
-
-            String generate = "INSERT INTO creditcard (?,?,?,?,?)";
+            boolean checkInsert=false;
+            String generate = "INSERT INTO creditcard (ccnumber,cvv2,expiredate,password,accountid) VALUES(?,?,?,?,?)";
 
             PreparedStatement preparedStatement = ConnectionProvider.setConnection().prepareStatement(generate);
 
@@ -48,14 +38,13 @@ public class CreditCardRepo {
             preparedStatement.setDate(3, expireDate);
             preparedStatement.setInt(4, password);
             preparedStatement.setInt(5, accountID);
-            preparedStatement.executeUpdate();
 
             if(preparedStatement.executeUpdate()>0){
                 checkInsert=true;
             }
 
             preparedStatement.close();
-        }
+
 
         return checkInsert;
     }
@@ -63,7 +52,7 @@ public class CreditCardRepo {
 
 
     //remove a credit card
-    public boolean remove(long ccNumber) throws SQLException {
+    public boolean remove(long ccNumber) throws SQLException, ClassNotFoundException {
 
         String remove="DELETE FROM creditcard WHERE ccnumber=?";
 
@@ -81,7 +70,7 @@ public class CreditCardRepo {
 
 
     //change credit card password
-    public boolean changePassword (int password,long ccNumber) throws SQLException {
+    public boolean changePassword (int password,long ccNumber) throws SQLException, ClassNotFoundException {
         String update="UPDATE creditcard SET password=? WHERE ccnumber=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
@@ -99,8 +88,8 @@ public class CreditCardRepo {
 
 
     //show credit card info
-    public CreditCard showInfo(long ccNumber) throws SQLException, ParseException {
-        String select="select * from creditcard  where ccnumber=?;";
+    public CreditCard showInfo(long ccNumber) throws SQLException, ParseException, ClassNotFoundException {
+        String select="select * from creditcard  where ccnumber=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(select);
 
@@ -108,27 +97,46 @@ public class CreditCardRepo {
 
         ResultSet resultSet=preparedStatement.executeQuery();
 
-        CreditCard creditCard=null;
+        CreditCard creditCard=new CreditCard();
 //        Account account;
 //        List<Account> accountList=new ArrayList<>();
 
         while(resultSet.next()) {
 
-            int numberOfCC = resultSet.getInt(1);
+            long numberOfCC = resultSet.getLong(1);
             int CVV2 = resultSet.getInt(2);
             Date expireDate = resultSet.getDate(3);
             int pass = resultSet.getInt(4);
-
-            creditCard=new CreditCard();
+            int accountID=resultSet.getInt(5);
+            int wrongPassEntries=resultSet.getInt(6);
 
             creditCard.setCcNumber(numberOfCC);
             creditCard.setCVV2(CVV2);
             creditCard.setExpireDate(expireDate);
             creditCard.setPasscode(pass);
+            creditCard.setWrongPasswordEntries(wrongPassEntries);
 
         }
         preparedStatement.close();
-
         return creditCard;
+
+    }
+
+
+
+    //wrong password entry
+    public int wrongPasswordEntry(long ccNumber) throws SQLException, ClassNotFoundException {
+        String wrongEntry="update creditCard set wrongPasswordEntries=wrongPasswordEntries+1 where ccNumber=? returning wronpasswordentries";
+
+        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(wrongEntry);
+        preparedStatement.setLong(1,ccNumber);
+        ResultSet resultSet=preparedStatement.executeQuery();
+
+        resultSet.next();
+
+        int numberOfWrongEntries=resultSet.getInt(1);
+        preparedStatement.close();
+
+        return numberOfWrongEntries;
     }
 }

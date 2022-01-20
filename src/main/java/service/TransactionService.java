@@ -1,5 +1,6 @@
 package service;
 
+import model.Transaction;
 import repository.AccountRepo;
 import repository.CreditCardRepo;
 import repository.TransactionRepo;
@@ -8,22 +9,45 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 public class TransactionService {
 
         private static TransactionRepo transactionRepo;
         private static AccountRepo accountRepo;
 
-        //add a new transaction
-    public static void createTransaction (long ccNumber, long destinationCCNumber,int amount,String description) throws SQLException, ParseException {
+    static {
+        try {
+            transactionRepo = new TransactionRepo();
+            accountRepo = new AccountRepo();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //add a new transaction
+    public static boolean createTransaction (long ccNumber, long destinationCCNumber,int amount,String description) throws SQLException, ParseException, ClassNotFoundException {
 
             Date date=new Date();
             java.sql.Date sqlDate=new java.sql.Date(date.getTime());
-            Time sqlTime=new Time(date.getTime());
-            transactionRepo.add(sqlDate,sqlTime,ccNumber,destinationCCNumber,amount,description);
+            boolean checkTransaction=transactionRepo.add(sqlDate,ccNumber,destinationCCNumber,amount,description);
 
             //transaction cost
-            transactionRepo.add(sqlDate,sqlTime,ccNumber,1,6000,"transaction cost");
+            boolean checkTransactionCost=transactionRepo.addTransactionFee(sqlDate,ccNumber,6000,"transaction cost");
+            return checkTransactionCost && checkTransaction;
+    }
+
+
+    //show transaction list
+
+    public static List<Transaction> showTransactionList(int accountID) throws SQLException, ClassNotFoundException {
+
+        List<Transaction> transactionList=transactionRepo.showList(accountID);
+
+        return transactionList;
     }
 
 }

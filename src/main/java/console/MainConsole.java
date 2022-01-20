@@ -1,7 +1,10 @@
 package console;
 
+import service.ClientService;
+
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MainConsole {

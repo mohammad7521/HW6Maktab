@@ -9,7 +9,7 @@ public class BranchBoss {
     private String firstName;
     private String lastName;
     private char gender;
-    private Date birthDay;
+    private String address;
     private Branch branch;
     private Employee[] employees;
 
@@ -32,8 +32,8 @@ public class BranchBoss {
         this.gender = gender;
     }
 
-    public void setBirthDay(Date birthDay) {
-        this.birthDay = birthDay;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setBranch(Branch branch) {

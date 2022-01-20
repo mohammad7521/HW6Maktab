@@ -5,9 +5,9 @@ public class Account {
     //attributes
     private int id;
     private int balance;
-    private Client client;
-    private CreditCard creditCard;
-    private Branch branch;
+    private Client client=new Client();
+    private CreditCard creditCard=new CreditCard();
+    private Branch branch=new Branch();
 
 
 
@@ -32,14 +32,21 @@ public class Account {
         this.client = client;
     }
 
-    public void setCreditCard(CreditCard creditCard) {
-        this.creditCard = creditCard;
+    public void setCreditCardNumber(long creditCardNumber) {
+        creditCard.setCcNumber(creditCardNumber);
     }
 
     public void setBranch(Branch branch) {
         this.branch = branch;
     }
 
+    public void setBranchID(int id){
+        this.branch.setId(id);
+    }
+
+    public void setClientID(int id){
+        this.client.setId(id);
+    }
 
 
     //getters
@@ -56,11 +63,19 @@ public class Account {
         return client;
     }
 
-    public CreditCard getCreditCard() {
-        return creditCard;
+    public long getCreditCardNumber() {
+        return creditCard.getCcNumber();
     }
 
     public Branch getBranch() {
         return branch;
+    }
+
+    public int getBranchID(){
+        return branch.getId();
+    }
+
+    public int getClientID(){
+        return client.getId();
     }
 }

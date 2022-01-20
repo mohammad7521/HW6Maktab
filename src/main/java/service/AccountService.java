@@ -10,18 +10,28 @@ public class AccountService {
 
     private static AccountRepo accountRepo;
 
+    static {
+        try {
+            accountRepo = new AccountRepo();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     //add a new account
-    public static void addNew(int clientID,int branchID,int initialDeposit) throws SQLException, ParseException {
+    public static boolean addNew(int clientID,int branchID,int initialDeposit) throws SQLException, ParseException, ClassNotFoundException {
 
         Account account=accountRepo.add(initialDeposit,clientID,branchID);
-        CreditCardService.addNew(account.getId());
+        return CreditCardService.addNew(account.getId());
     }
 
 
 
     //remove an account
-    public static boolean remove(int accountID) throws SQLException {
+    public static boolean remove(int accountID) throws SQLException, ClassNotFoundException {
 
         Account account=accountRepo.showInfo(accountID);
 
@@ -34,13 +44,14 @@ public class AccountService {
 
 
     //balance addition
-    public static boolean addition(int amount,long ccNumber) throws SQLException {
+    public static boolean addition(int amount,long ccNumber) throws SQLException, ClassNotFoundException {
         return accountRepo.balanceAddition(amount,ccNumber);
     }
 
 
+
     //balance deduction
-    public static boolean deduction(int amount,long ccNumber) throws SQLException {
+    public static boolean deduction(int amount,long ccNumber) throws SQLException, ClassNotFoundException {
         Account account = accountRepo.showInfoBasedOnCC(ccNumber);
 
         if (account.getBalance() > amount) {
@@ -49,4 +60,11 @@ public class AccountService {
         else return false;
     }
 
+
+
+    //show account info
+    public static Account showInfo(int accountID) throws SQLException, ClassNotFoundException {
+        Account account=accountRepo.showInfo(accountID);
+        return account;
+    }
 }

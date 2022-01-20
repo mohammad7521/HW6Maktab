@@ -12,10 +12,9 @@ import java.sql.SQLException;
 
 public class BossRepo {
 
-    public BossRepo() throws SQLException {
+    public BossRepo() throws SQLException, ClassNotFoundException {
         ConnectionProvider.setConnection();
     }
-
 
 
     //CRUD
@@ -23,16 +22,16 @@ public class BossRepo {
 
 
     //add a boss
-    public boolean add(String firstName, String lastName, char gender, Date birthDate,int branchID) throws SQLException {
+    public boolean add(String firstName, String lastName, char gender,String address,int branchID) throws SQLException, ClassNotFoundException {
 
-        String insert="INSERT INTO boss (default,?,?,?,?,?)";
+        String insert="insert into boss(firstName, lastName, gender, address, branchID) values (?,?,?,?,?)";
 
         PreparedStatement preparedStatement= ConnectionProvider.setConnection().prepareStatement(insert);
 
         preparedStatement.setString(1,firstName);
         preparedStatement.setString(2,lastName);
         preparedStatement.setString(3,String.valueOf(gender));
-        preparedStatement.setDate(4,birthDate);
+        preparedStatement.setString(4,address);
         preparedStatement.setInt(5,branchID);
 
 
@@ -46,9 +45,9 @@ public class BossRepo {
 
 
     //remove a boss
-    public boolean remove(int bossID) throws SQLException {
+    public boolean remove(int bossID) throws SQLException, ClassNotFoundException {
 
-        String remove="DELETE FROM boss WHERE bossid=?";
+        String remove="DELETE FROM boss WHERE bossid=(?)";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(remove);
 
@@ -64,16 +63,15 @@ public class BossRepo {
 
 
     //update info of a boss
-    public boolean update(int bossID,String firstName,String lastName,char gender,Date birthDate) throws SQLException {
-        String update="UPDATE boss SET firstname=?,lastname=?,gender,=?,birthdate=? WHERE bossid=?";
+    public boolean update(int bossID,String firstName,String lastName,String address) throws SQLException, ClassNotFoundException {
+        String update="UPDATE boss SET firstname=?,lastname=?,address=? WHERE bossid=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
 
         preparedStatement.setString(1,firstName);
         preparedStatement.setString(2,lastName);
-        preparedStatement.setString(3,String.valueOf(gender));
-        preparedStatement.setDate(5,birthDate);
-        preparedStatement.setInt(5,bossID);
+        preparedStatement.setString(3,address);
+        preparedStatement.setInt(4,bossID);
 
         int updateCheck=preparedStatement.executeUpdate();
 
@@ -84,28 +82,28 @@ public class BossRepo {
 
 
     //show info of a boss
-    public BranchBoss showInfo(int bossID) throws SQLException {
+    public BranchBoss showInfo(int bossID) throws SQLException, ClassNotFoundException {
         String showInfo="SELECT * FROM boss where bossid=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
         preparedStatement.setInt(1,bossID);
         ResultSet resultSet=preparedStatement.executeQuery();
 
-        BranchBoss branchBoss=null;
+        BranchBoss branchBoss=new BranchBoss();
 
         while (resultSet.next()){
             int id=resultSet.getInt(1);
             String firstName=resultSet.getString(2);
             String lastName=resultSet.getString(3);
             String gender=resultSet.getString(4);
-            Date birthDate=resultSet.getDate(5);
+            String address=resultSet.getString(5);
             int branchID=resultSet.getInt(6);
 
             branchBoss.setId(id);
             branchBoss.setFirstName(firstName);
             branchBoss.setLastName(lastName);
             branchBoss.setGender(gender.charAt(0));
-            branchBoss.setBirthDay(birthDate);
+            branchBoss.setAddress(address);
         }
 
         return branchBoss;

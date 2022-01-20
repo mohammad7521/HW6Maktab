@@ -10,14 +10,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class EmployeeRepo {
-    public EmployeeRepo() throws SQLException {
+    public EmployeeRepo() throws SQLException, ClassNotFoundException {
         ConnectionProvider.setConnection();
     }
 
     //add an employee
-    public boolean add(String firstName, String lastName, char gender,String address, int branchID,int bossID) throws SQLException {
+    public boolean add(String firstName, String lastName, char gender,String address, int branchID,int bossID) throws SQLException, ClassNotFoundException {
 
-        String insert="INSERT INTO employee (default,?,?,?,?,?,?)";
+        String insert="INSERT INTO EMPLOYEE(firstname,lastname,gender,address,branchid,bossid) VALUES(?,?,?,?,?,?)";
 
         PreparedStatement preparedStatement= ConnectionProvider.setConnection().prepareStatement(insert);
 
@@ -39,7 +39,7 @@ public class EmployeeRepo {
 
 
     //remove an employee
-    public boolean remove(int employeeID) throws SQLException {
+    public boolean remove(int employeeID) throws SQLException, ClassNotFoundException {
 
         String remove="DELETE FROM employee WHERE employeeID=?";
 
@@ -57,18 +57,15 @@ public class EmployeeRepo {
 
 
     //update info of an employee
-    public boolean update(int employeeID,String firstName, String lastName, char gender,String address, int branchID,int bossID) throws SQLException {
-        String update="UPDATE employee SET firstname=?,lastname=?,gender=?,address=?,branchid=?,bossid=? WHERE employeeid=?";
+    public boolean update(int employeeID,String firstName, String lastName,String address) throws SQLException, ClassNotFoundException {
+        String update="UPDATE employee SET firstname=?,lastname=?,address=? WHERE employeeid=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
 
         preparedStatement.setString(1,firstName);
         preparedStatement.setString(2,lastName);
-        preparedStatement.setString(3,String.valueOf(gender));
-        preparedStatement.setString(5,address);
-        preparedStatement.setInt(5,branchID);
-        preparedStatement.setInt(6,bossID);
-        preparedStatement.setInt(7,employeeID);
+        preparedStatement.setString(3,address);
+        preparedStatement.setInt(4,employeeID);
 
         int updateCheck=preparedStatement.executeUpdate();
 
@@ -79,14 +76,14 @@ public class EmployeeRepo {
 
 
     //show employee info
-    public Employee showInfo(int employeeID) throws SQLException {
+    public Employee showInfo(int employeeID) throws SQLException, ClassNotFoundException {
         String showInfo="SELECT * FROM employee where employeeid=?";
 
         PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
         preparedStatement.setInt(1,employeeID);
         ResultSet resultSet=preparedStatement.executeQuery();
 
-        Employee employee=null;
+        Employee employee=new Employee();
 
         while (resultSet.next()){
             int id=resultSet.getInt(1);

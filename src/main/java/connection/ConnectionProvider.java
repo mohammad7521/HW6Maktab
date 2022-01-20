@@ -11,8 +11,11 @@ public class ConnectionProvider {
     private ConnectionProvider(){}
 
 
-    public static Connection setConnection() throws SQLException {
-        if (connection==null || connection.isClosed()){
+    public static Connection setConnection() throws SQLException, ClassNotFoundException {
+
+
+        if (connection==null){
+            Class.forName("org.postgresql.Driver");
             connection=DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres","postgres","6642");
         }
         return connection;

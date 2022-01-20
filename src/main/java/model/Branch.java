@@ -21,4 +21,24 @@ public class Branch {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public BranchBoss getBoss() {
+        return boss;
+    }
+
+    public Employee[] getEmployees() {
+        return employees;
+    }
 }

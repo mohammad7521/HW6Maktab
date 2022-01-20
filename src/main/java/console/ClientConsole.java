@@ -1,8 +1,5 @@
 package console;
 
-import model.Client;
-import model.CreditCard;
-import service.AccountService;
 import service.ClientService;
 import service.CreditCardService;
 
@@ -15,116 +12,62 @@ public class ClientConsole {
 
     public static void clientMenu() throws SQLException, ClassNotFoundException, ParseException {
 
-        boolean flag = true;
+        boolean flag=true;
         System.out.println("enter your ID");
         Scanner scanner = new Scanner(System.in);
-        int id = scanner.nextInt();
-        Client client = ClientService.showInfo(id);
-        if (client.getId()==id) {
-            while (flag) {
-                System.out.println();
-                System.out.println("1-Show accounts list");
-                System.out.println("2-create a transaction");
-                System.out.println("3-show All transactions");
-                System.out.println("4-show transaction based on specific date");
-                System.out.println("5-Change password");
-                System.out.println("6-add new account");
-                System.out.println("7-remove account");
-                System.out.println("8-deposit");
-                System.out.println("9-withdraw");
-                System.out.println("0-exit");
+        int id=scanner.nextInt();
+        while (flag) {
+            System.out.println();
+            System.out.println("1-Show accounts list");
+            System.out.println("2-create a transaction");
+            System.out.println("3-show All transactions");
+            System.out.println("4-add new account");
+            System.out.println("0-exit");
 
 
-                if (scanner.hasNextInt()) {
-                    int userEntry = scanner.nextInt();
-                    switch (userEntry) {
-                        case 1:
-                            ClientService.showAccountList(id);
-                            break;
-                        case 2:
-                            System.out.println("select your account by ID");
-                            ClientService.showAccountList(id);
-                            int accountID = scanner.nextInt();
-                            System.out.println("enter amount: ");
-                            long amount = scanner.nextLong();
-                            System.out.println("enter destination ccNumber");
-                            long destinationCC = scanner.nextLong();
-                            CreditCard creditCard=CreditCardService.showInfo(destinationCC);
-                            if (creditCard.getCcNumber()!=destinationCC){
-                                System.out.println("destination credit card number wrong!");
-                                break;
-                            }
-                            System.out.println("enter your cvv2");
-                            int cvv2 = scanner.nextInt();
-                            System.out.println("enter your password");
-                            int password = scanner.nextInt();
-                            System.out.println("enter description");
-                            scanner.nextLine();
-                            String description = scanner.next();
-                            ClientService.createTransaction(accountID, destinationCC, amount, description
-                                    , cvv2, password);
-                            break;
-                        case 3:
-                            ClientService.showAccountList(id);
-                            System.out.println("select the account");
-                            accountID = scanner.nextInt();
-                            ClientService.showTransactionList(accountID);
-                            break;
-                        case 4:
-                            ClientService.showAccountList(id);
-                            System.out.println("enter starting date in the following format");
-                            System.out.println("yyyy-mm-dd");
-                            Date startDate = Date.valueOf(scanner.next());
-                            System.out.println("enter the account id");
-                            accountID = scanner.nextInt();
-                            ClientService.showTransactionList(accountID, startDate);
-                            break;
-                        case 5:
-                            ClientService.showAccountList(id);
-                            System.out.println("enter the account id");
-                            accountID = scanner.nextInt();
-                            System.out.println("enter the old password");
-                            int oldPass = scanner.nextInt();
-                            System.out.println("enter the new password");
-                            int newPass = scanner.nextInt();
-                            ClientService.changeCCPassword(accountID, oldPass, newPass);
-                            break;
-                        case 6:
-                            System.out.println("enter your branch:");
-                            int branchID=scanner.nextInt();
-                            System.out.println("enter your initial deposit");
-                            long initialDeposit=scanner.nextLong();
-                            ClientService.createAccount(id,branchID,initialDeposit);
-                            break;
-                        case 7:
-                            ClientService.showAccountList(id);
-                            System.out.println("select the account that you want to remove:");
-                            accountID=scanner.nextInt();
-                            ClientService.removeAccount(accountID,id);
-                            break;
-                        case 8:
-                            System.out.println("enter the amount:");
-                            amount=scanner.nextLong();
-                            System.out.println("enter the account id:");
-                            accountID=scanner.nextInt();
-                            ClientService.deposit(accountID,amount);
-                            break;
-                        case 9:
-                            System.out.println("enter the amount:");
-                            amount=scanner.nextLong();
-                            System.out.println("enter account id:");
-                            ClientService.showAccountList(id);
-                            accountID=scanner.nextInt();
-                            System.out.println("enter your password");
-                            password=scanner.nextInt();
-                            ClientService.withDraw(accountID,amount,password);
-                            break;
-                        case 0:
-                            flag = false;
-                            break;
-                    }
-                } else System.out.println("please enter a number! ");
-            }
-        } System.out.println("client ID does not exist! ");
+
+            if (scanner.hasNextInt()) {
+                int userEntry = scanner.nextInt();
+                switch (userEntry) {
+                    case 1:
+                        ClientService.showAccountList(id);
+                        break;
+                    case 2:
+                        System.out.println("select your account by ID");
+                        ClientService.showAccountList(id);
+                        int accountID=scanner.nextInt();
+                        System.out.println("enter amount: ");
+                        int amount=scanner.nextInt();
+                        System.out.println("enter destination ccNumber");
+                        long destinationCC=scanner.nextLong();
+                        System.out.println("enter your cvv2");
+                        int cvv2=scanner.nextInt();
+                        System.out.println("enter your password");
+                        int password=scanner.nextInt();
+                        System.out.println("enter description");
+                        scanner.nextLine();
+                        String description=scanner.next();
+                        ClientService.createTransaction(accountID,destinationCC,amount,description
+                        ,cvv2,password);
+                        break;
+                    case 3:
+                        ClientService.showAccountList(id);
+                        System.out.println("select the account");
+                        accountID=scanner.nextInt();
+                        ClientService.showTransactionList(accountID);
+                        break;
+                    case 4:
+                        ClientService.showAccountList(id);
+                        System.out.println("enter starting date in the following format");
+                        System.out.println("yyyy-mm-dd");
+                        Date startDate= Date.valueOf(scanner.next());
+                        accountID= scanner.nextInt();
+                        ClientService.showTransactionList(accountID,startDate);
+//                    case 0:
+//                        flag=false;
+//                        break;
+                }
+            } else System.out.println("please enter a number! ");
+        }
     }
 }
