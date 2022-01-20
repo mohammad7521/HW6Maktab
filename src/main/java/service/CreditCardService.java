@@ -34,13 +34,9 @@ public class CreditCardService {
 
 
     //remove a credit card
-    public static boolean remove(int ccNumber) throws SQLException, ParseException, ClassNotFoundException {
+    public static boolean remove(long ccNumber) throws SQLException, ParseException, ClassNotFoundException {
 
-        CreditCard cc=creditCardRepo.showInfo(ccNumber);
-        if (cc==null){
-            return false;
-        }
-        else return creditCardRepo.remove(ccNumber);
+        return creditCardRepo.remove(ccNumber);
     }
 
 

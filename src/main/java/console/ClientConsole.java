@@ -2,6 +2,7 @@ package console;
 
 import model.Client;
 import model.CreditCard;
+import service.AccountService;
 import service.ClientService;
 import service.CreditCardService;
 
@@ -28,8 +29,9 @@ public class ClientConsole {
                 System.out.println("4-show transaction based on specific date");
                 System.out.println("5-Change password");
                 System.out.println("6-add new account");
-                System.out.println("7-deposit");
-                System.out.println("8-withdraw");
+                System.out.println("7-remove account");
+                System.out.println("8-deposit");
+                System.out.println("9-withdraw");
                 System.out.println("0-exit");
 
 
@@ -91,17 +93,23 @@ public class ClientConsole {
                             System.out.println("enter your branch:");
                             int branchID=scanner.nextInt();
                             System.out.println("enter your initial deposit");
-                            long initialDeposit=scanner.nextInt();
+                            long initialDeposit=scanner.nextLong();
                             ClientService.createAccount(id,branchID,initialDeposit);
                             break;
                         case 7:
+                            ClientService.showAccountList(id);
+                            System.out.println("select the account that you want to remove:");
+                            accountID=scanner.nextInt();
+                            ClientService.removeAccount(accountID,id);
+                            break;
+                        case 8:
                             System.out.println("enter the amount:");
                             amount=scanner.nextLong();
                             System.out.println("enter the account id:");
                             accountID=scanner.nextInt();
                             ClientService.deposit(accountID,amount);
                             break;
-                        case 8:
+                        case 9:
                             System.out.println("enter the amount:");
                             amount=scanner.nextLong();
                             System.out.println("enter account id:");

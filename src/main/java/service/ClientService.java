@@ -9,6 +9,7 @@ import repository.ClientRepo;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientService {
@@ -139,6 +140,25 @@ public class ClientService {
             System.out.println("account created successfully");
         }
         else System.out.println("something went wrong");
+    }
+
+
+    //remove an account
+    public static void removeAccount(int accountId,int clientID) throws SQLException, ParseException, ClassNotFoundException {
+
+        Client client = ClientService.showInfo(clientID);
+        List<Account> accountList;
+        accountList = client.getAccount();
+
+        for (int i = 0; i < accountList.size(); i++) {
+            if (accountId == accountList.get(i).getId()) {
+
+                if (AccountService.remove(accountId)) {
+                    System.out.println("account removed successfully");
+                    break;
+                }
+            }
+        }
     }
 
 

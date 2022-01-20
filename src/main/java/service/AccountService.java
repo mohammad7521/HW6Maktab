@@ -1,6 +1,7 @@
 package service;
 
 import model.Account;
+import model.CreditCard;
 import repository.AccountRepo;
 
 import java.sql.SQLException;
@@ -31,14 +32,15 @@ public class AccountService {
 
 
     //remove an account
-    public static boolean remove(int accountID) throws SQLException, ClassNotFoundException {
+    public static boolean remove(int accountID) throws SQLException, ClassNotFoundException, ParseException {
 
-        Account account=accountRepo.showInfo(accountID);
+        Account account=AccountService.showInfo(accountID);
+        long ccNumber=account.getCreditCardNumber();
 
-        if(account==null){
-            return false;
-        }
-        else return accountRepo.remove(accountID);
+        boolean ccRemoveCheck=CreditCardService.remove(ccNumber);
+        boolean accountRemoveCheck=accountRepo.remove(accountID);
+
+        return ccRemoveCheck && accountRemoveCheck;
     }
 
 
