@@ -8,7 +8,7 @@ public class Transaction {
     //attributes
     private int id;
     private java.sql.Date date;
-    private int amount;
+    private long amount;
     private long creditCard;
     private long destinationCC;
     private String description;
@@ -55,7 +55,7 @@ public class Transaction {
         this.date = date;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 

@@ -29,7 +29,7 @@ public class TransactionService {
 
 
     //add a new transaction
-    public static boolean createTransaction (long ccNumber, long destinationCCNumber,int amount,String description) throws SQLException, ParseException, ClassNotFoundException {
+    public static boolean createTransaction (long ccNumber, long destinationCCNumber,long amount,String description){
 
             Date date=new Date();
             java.sql.Date sqlDate=new java.sql.Date(date.getTime());
@@ -42,12 +42,17 @@ public class TransactionService {
 
 
     //show transaction list
-
-    public static List<Transaction> showTransactionList(int accountID) throws SQLException, ClassNotFoundException {
+    public static List<Transaction> showTransactionList(int accountID)  {
 
         List<Transaction> transactionList=transactionRepo.showList(accountID);
 
         return transactionList;
     }
 
+
+    //show transaction based on a date
+    public static List<Transaction> showTransactionList(int accountID, java.sql.Date startDate)  {
+
+        return transactionRepo.showList(accountID,startDate);
+    }
 }

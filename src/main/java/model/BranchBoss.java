@@ -8,9 +8,8 @@ public class BranchBoss {
     private int id;
     private String firstName;
     private String lastName;
-    private char gender;
     private String address;
-    private Branch branch;
+    private Branch branch=new Branch();
     private Employee[] employees;
 
 
@@ -28,15 +27,23 @@ public class BranchBoss {
         this.lastName = lastName;
     }
 
-    public void setGender(char gender) {
-        this.gender = gender;
-    }
-
     public void setAddress(String address) {
         this.address = address;
     }
 
     public void setBranch(Branch branch) {
         this.branch = branch;
+    }
+
+    public void setBranchID(int branchID){this.branch.setId(branchID);}
+
+    //getters
+
+    public int getId() {
+        return id;
+    }
+
+    public int getBranchID(){
+        return this.branch.getId();
     }
 }

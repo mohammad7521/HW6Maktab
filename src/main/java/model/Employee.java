@@ -7,8 +7,6 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String address;
-    private char gender;
-    private Branch branch;
     private BranchBoss boss;
 
 
@@ -29,15 +27,28 @@ public class Employee {
         this.address = address;
     }
 
-    public void setGender(char gender) {
-        this.gender = gender;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
-    }
-
     public void setBoss(BranchBoss boss) {
         this.boss = boss;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public BranchBoss getBoss() {
+        return boss;
     }
 }

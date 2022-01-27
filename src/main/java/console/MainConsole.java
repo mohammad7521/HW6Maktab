@@ -17,18 +17,19 @@ public class MainConsole {
 
             Scanner scanner = new Scanner(System.in);
 
-            if (scanner.hasNextInt()) {
-
-                int userSelect=scanner.nextInt();
+            try {
+                int userSelect = scanner.nextInt();
                 switch (userSelect) {
                     case 1:
                         AdminConsole.adminMenu();
                         break;
                     case 2:
                         ClientConsole.clientMenu();
-
+                        break;
                 }
-            } else System.out.println("please enter a number! ");
+            } catch (InputMismatchException e) {
+                System.out.println("please enter a number!");
+            }
         }
     }
 }

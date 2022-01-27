@@ -1,20 +1,18 @@
 package console;
 
 import model.Branch;
+import model.Client;
+import model.Employee;
 import service.BossService;
 import service.BranchService;
 import service.ClientService;
 import service.EmployeeService;
-
-import java.sql.SQLException;
-import java.sql.SQLOutput;
-import java.text.ParseException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class AdminConsole {
 
-    public static void adminMenu() throws SQLException, ClassNotFoundException, ParseException {
+    public static void adminMenu()  {
 
         boolean flag=true;
         while (flag) {
@@ -27,7 +25,7 @@ public class AdminConsole {
 
             Scanner scanner = new Scanner(System.in);
 
-            if (scanner.hasNextInt()) {
+            try {
                 int userEntry = scanner.nextInt();
                 switch (userEntry) {
                     case 1:
@@ -42,16 +40,18 @@ public class AdminConsole {
                     case 4:
                         clientManagement();
                     case 0:
-                        flag=false;
+                        flag = false;
                         break;
                 }
-            } else System.out.println("please enter a number! ");
+            }catch (InputMismatchException e){
+                System.out.println("please enter a valid number ! ");
+            }
         }
     }
 
 
 
-    public static void branchManagementMenu() throws SQLException, ClassNotFoundException {
+    public static void branchManagementMenu() {
 
         boolean flag=true;
         while (flag) {
@@ -63,7 +63,7 @@ public class AdminConsole {
 
             Scanner scanner = new Scanner(System.in);
 
-            if (scanner.hasNextInt()) {
+            try {
                 int userSelect = scanner.nextInt();
                 scanner.nextLine();
                 switch (userSelect) {
@@ -80,13 +80,15 @@ public class AdminConsole {
 
                     case 2:
                         while (true) {
-                            System.out.println("enter the desired branch ID");
-                            int branchID = scanner.nextInt();
-                            if (BranchService.remove(branchID)) {
-                                System.out.println("branch has been removed successfully! ");
+                                System.out.println("enter the desired branch ID");
+                                int branchID = scanner.nextInt();
+                                if (BranchService.remove(branchID)) {
+                                    System.out.println("branch has been removed successfully! ");
+                                    break;
+                                } else System.out.println("branch ID does not exist! ");
                                 break;
-                            } else System.out.println("branch ID does not exist! ");
                         }
+                        break;
 
                     case 3:
                         while (true) {
@@ -104,11 +106,13 @@ public class AdminConsole {
                             break;
                         }
                     case 0:
-                        flag=false;
+                        flag = false;
                         break;
 
                 }
-            }else System.out.println("please enter a number! ");
+            }catch (InputMismatchException e){
+                System.out.println("please enter a valid number !");
+            }
         }
     }
 
@@ -118,7 +122,7 @@ public class AdminConsole {
 
 
 
-    public static void branchBossManagementMenu() throws SQLException, ClassNotFoundException {
+    public static void branchBossManagementMenu()   {
 
         boolean flag = true;
         while (flag) {
@@ -130,7 +134,7 @@ public class AdminConsole {
 
             Scanner scanner = new Scanner(System.in);
 
-            if (scanner.hasNextInt()) {
+            try {
                 int userSelect = scanner.nextInt();
                 scanner.nextLine();
                 switch (userSelect) {
@@ -140,16 +144,12 @@ public class AdminConsole {
                         String firstName = scanner.next();
                         System.out.println("enter last name:");
                         String lastName = scanner.next();
-                        System.out.println("enter gender:");
-                        String gender = scanner.next();
                         System.out.println("enter address:");
                         String address = scanner.next();
                         System.out.println("enter working branch ID:");
                         int branchId = scanner.nextInt();
                         scanner.nextLine();
-                        if (BossService.addNew(firstName, lastName, gender.charAt(0), address, branchId)) {
-                            System.out.println("branch boss has been added successfully! ");
-                        }
+                        BossService.addNew(firstName, lastName, address, branchId);
                         break;
 
                     case 2:
@@ -159,7 +159,7 @@ public class AdminConsole {
                             System.out.println("branch Boss removed successfully! ");
                             break;
                         } else System.out.println("branch boss ID does not exist! ");
-
+                        break;
                     case 3:
 
                         System.out.println("enter the desired branch boss ID");
@@ -171,17 +171,17 @@ public class AdminConsole {
                         String newLastName = scanner.next();
                         System.out.println("enter new address:");
                         String newAddress = scanner.next();
+                        BossService.modify(ID, newName, newLastName, newAddress);
 
-                        if (BossService.modify(ID, newName, newLastName, newAddress)) {
-                            System.out.println("branch boss has been modified successfully! ");
-                        } else System.out.println("branch boss ID does not exist! ");
                         break;
 
                     case 0:
-                        flag=false;
+                        flag = false;
                         break;
                 }
-            }else System.out.println("please enter a number! ");
+            }catch (InputMismatchException e){
+                System.out.println("please enter a valid number ! ");
+            }
         }
     }
 
@@ -192,7 +192,7 @@ public class AdminConsole {
 
 
 
-    public static void employeeManagementMenu() throws SQLException, ClassNotFoundException {
+    public static void employeeManagementMenu()  {
 
         boolean flag=true;
         while (flag) {
@@ -204,7 +204,7 @@ public class AdminConsole {
 
             Scanner scanner = new Scanner(System.in);
 
-            if (scanner.hasNextInt()) {
+            try {
                 int userSelect = scanner.nextInt();
                 scanner.nextLine();
                 switch (userSelect) {
@@ -214,59 +214,65 @@ public class AdminConsole {
                         String firstName = scanner.next();
                         System.out.println("enter last name:");
                         String lastName = scanner.next();
-                        System.out.println("enter gender:");
-                        String gender=scanner.next();
                         System.out.println("enter address:");
-                        String address=scanner.next();
-                        System.out.println("enter working branch ID:");
-                        int branchId=scanner.nextInt();
-                        scanner.nextLine();
+                        String address = scanner.next();
                         System.out.println("enter their boss ID:");
-                        int bossID=scanner.nextInt();
-                        scanner.nextLine();
-                        if (EmployeeService.addNew(firstName,lastName,gender.charAt(0),address,branchId,bossID)) {
-                            System.out.println("employee has been added successfully! ");
-                        }
-                        break;
-
-                    case 2:
-                            System.out.println("enter the desired employee ID");
-                            int employeeID = scanner.nextInt();
-                            if (EmployeeService.remove(employeeID)) {
-                                System.out.println("employee removed successfully! ");
+                            try {
+                                int bossID = scanner.nextInt();
+                                scanner.nextLine();
+                                if (EmployeeService.addNew(firstName, lastName, address, bossID)) {
+                                    System.out.println("employee has been added successfully! ");
+                                }else System.out.println("boss id does not exist ! ");
                                 break;
-                            } else System.out.println("employeeID does not exist! ");
+                            } catch (InputMismatchException e) {
+                                System.out.println("please enter a valid boss id ! ");
+                                break;
+                            }
+                    case 2:
+                        System.out.println("enter the desired employee ID");
+                        int employeeID = scanner.nextInt();
+                        if (EmployeeService.remove(employeeID)) {
+                            System.out.println("employee removed successfully! ");
                             break;
+                        } else System.out.println("employeeID does not exist! ");
+                        break;
 
 
                     case 3:
-                            System.out.println("enter the desired employee ID");
-                            int ID = scanner.nextInt();
-                            scanner.nextLine();
-                            System.out.println("enter new first name:");
-                            String newName = scanner.nextLine();
-                            System.out.println("enter new last name:");
-                            String newLastName = scanner.next();
-                            System.out.println("enter new address:");
-                            String newAddress=scanner.next();
-
-                            if (EmployeeService.modify(newName,newLastName,newAddress,ID)) {
-                                System.out.println("employee has been modified successfully! ");
-                                break;
-                            } else System.out.println("employee ID does not exist! ");
+                        System.out.println("enter the desired employee ID");
+                        int ID = scanner.nextInt();
+                        Employee employee = EmployeeService.showInfo(ID);
+                        if (employee.getId() != ID) {
+                            System.out.println("employee id does not exist!");
                             break;
+                        }
+                        scanner.nextLine();
+                        System.out.println("enter new first name:");
+                        String newName = scanner.nextLine();
+                        System.out.println("enter new last name:");
+                        String newLastName = scanner.next();
+                        System.out.println("enter new address:");
+                        String newAddress = scanner.next();
+
+                        if (EmployeeService.modify(newName, newLastName, newAddress, ID)) {
+                            System.out.println("employee has been modified successfully! ");
+                            break;
+                        } else System.out.println("modification unsuccessful");
+                        break;
                     case 0:
-                        flag=false;
+                        flag = false;
                         break;
                 }
-            }else System.out.println("please enter a number! ");
+            }catch (InputMismatchException e){
+                System.out.println("please enter a valid number ! ");
+            }
         }
     }
 
 
 
 
-    public static void clientManagement() throws SQLException, ClassNotFoundException, ParseException {
+    public static void clientManagement() {
 
         boolean flag=true;
         while (flag) {
@@ -290,16 +296,12 @@ public class AdminConsole {
                         String lastName = scanner.next();
                         System.out.println("enter address:");
                         String address=scanner.next();
-                        System.out.println("enter gender:");
-                        String gender=scanner.next();
-                        System.out.println("enter their initial deposit");
-                        int initialDeposit=scanner.nextInt();
-                        System.out.println("enter the branch ID");
+                        System.out.println("enter their initial deposit:");
+                        long initialDeposit=scanner.nextLong();
+                        System.out.println("enter the branch ID:");
                         int branchID=scanner.nextInt();
                         scanner.nextLine();
-                        if (ClientService.addNew(firstName,lastName,gender.charAt(0),address,initialDeposit,branchID)) {
-                            System.out.println("client has been added successfully! ");
-                        }
+                        ClientService.addNew(firstName,lastName,address,initialDeposit,branchID);
                         break;
 
                     case 2:
@@ -313,8 +315,13 @@ public class AdminConsole {
 
 
                     case 3:
-                        System.out.println("enter the desired employee ID");
+                        System.out.println("enter the desired client ID");
                         int ID = scanner.nextInt();
+                        Client client=ClientService.showInfo(ID);
+                        if (client.getId()!=ID){
+                            System.out.println("client ID does not exist!");
+                            break;
+                        }
                         scanner.nextLine();
                         System.out.println("enter new first name:");
                         String newName = scanner.nextLine();
@@ -323,16 +330,16 @@ public class AdminConsole {
                         System.out.println("enter new address:");
                         String newAddress=scanner.next();
 
-                        if (EmployeeService.modify(newName,newLastName,newAddress,ID)) {
+                        if (ClientService.modify(ID,newName,newLastName,newAddress)) {
                             System.out.println("employee has been modified successfully! ");
                             break;
-                        } else System.out.println("employee ID does not exist! ");
+                        } else System.out.println("client ID does not exist! ");
                         break;
                     case 0:
                         flag=false;
                         break;
                 }
-            }else System.out.println("please enter a number! ");
+            }else System.out.println("please enter a valid number! ");
         }
     }
 }

@@ -4,14 +4,14 @@ public class Account {
 
     //attributes
     private int id;
-    private int balance;
+    private long balance;
     private Client client=new Client();
     private CreditCard creditCard=new CreditCard();
     private Branch branch=new Branch();
 
 
 
-    public Account(int id, int balance) {
+    public Account(int id, long balance) {
         this.id = id;
         this.balance = balance;
     }
@@ -24,7 +24,7 @@ public class Account {
         this.id = id;
     }
 
-    public void setBalance(int balance) {
+    public void setBalance(long balance) {
         this.balance = balance;
     }
 
@@ -55,7 +55,7 @@ public class Account {
         return id;
     }
 
-    public int getBalance() {
+    public long getBalance() {
         return balance;
     }
 

@@ -26,13 +26,14 @@ public class CreditCardRepo {
 
 
     //generate a credit card
-    public boolean generate (long ccNumber, int cvv2,Date expireDate,int password,int accountID) throws SQLException, ClassNotFoundException {
+    public boolean generate (long ccNumber, int cvv2,Date expireDate,int password,int accountID) {
 
             boolean checkInsert=false;
-            String generate = "INSERT INTO creditcard (ccnumber,cvv2,expiredate,password,accountid) VALUES(?,?,?,?,?)";
+            String generate = "INSERT INTO creditcard (ccnumber,cvv2,expiredate,password,accountid,wrongpasswordentries) VALUES(?,?,?,?,?,0)";
 
-            PreparedStatement preparedStatement = ConnectionProvider.setConnection().prepareStatement(generate);
-
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(generate);
             preparedStatement.setLong(1, ccNumber);
             preparedStatement.setInt(2, cvv2);
             preparedStatement.setDate(3, expireDate);
@@ -44,7 +45,11 @@ public class CreditCardRepo {
             }
 
             preparedStatement.close();
-
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         return checkInsert;
     }
@@ -52,17 +57,24 @@ public class CreditCardRepo {
 
 
     //remove a credit card
-    public boolean remove(long ccNumber) throws SQLException, ClassNotFoundException {
+    public boolean remove(long ccNumber){
 
         String remove="DELETE FROM creditcard WHERE ccnumber=?";
 
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(remove);
+        int removeCheck=0;
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(remove);
+            preparedStatement.setLong(1,ccNumber);
 
-        preparedStatement.setLong(1,ccNumber);
+            removeCheck=preparedStatement.executeUpdate();
 
-        int removeCheck=preparedStatement.executeUpdate();
-
-        preparedStatement.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         return removeCheck >0;
     }
@@ -70,17 +82,26 @@ public class CreditCardRepo {
 
 
     //change credit card password
-    public boolean changePassword (int password,long ccNumber) throws SQLException, ClassNotFoundException {
+    public boolean changePassword (int password,long ccNumber){
         String update="UPDATE creditcard SET password=? WHERE ccnumber=?";
 
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
+        int updateCheck=0;
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(update);
+            preparedStatement.setInt(1,password);
+            preparedStatement.setLong(2,ccNumber);
 
-        preparedStatement.setInt(1,password);
-        preparedStatement.setLong(2,ccNumber);
+            updateCheck=preparedStatement.executeUpdate();
 
-        int updateCheck=preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        preparedStatement.close();
+
 
         return updateCheck >0;
     }
@@ -88,36 +109,43 @@ public class CreditCardRepo {
 
 
     //show credit card info
-    public CreditCard showInfo(long ccNumber) throws SQLException, ParseException, ClassNotFoundException {
+    public CreditCard showInfo(long ccNumber){
         String select="select * from creditcard  where ccnumber=?";
 
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(select);
-
-        preparedStatement.setLong(1,ccNumber);
-
-        ResultSet resultSet=preparedStatement.executeQuery();
+        PreparedStatement preparedStatement= null;
 
         CreditCard creditCard=new CreditCard();
-//        Account account;
-//        List<Account> accountList=new ArrayList<>();
+        try {
+            preparedStatement.setLong(1,ccNumber);
 
-        while(resultSet.next()) {
+            ResultSet resultSet=preparedStatement.executeQuery();
 
-            long numberOfCC = resultSet.getLong(1);
-            int CVV2 = resultSet.getInt(2);
-            Date expireDate = resultSet.getDate(3);
-            int pass = resultSet.getInt(4);
-            int accountID=resultSet.getInt(5);
-            int wrongPassEntries=resultSet.getInt(6);
+            while(resultSet.next()) {
 
-            creditCard.setCcNumber(numberOfCC);
-            creditCard.setCVV2(CVV2);
-            creditCard.setExpireDate(expireDate);
-            creditCard.setPasscode(pass);
-            creditCard.setWrongPasswordEntries(wrongPassEntries);
+                long numberOfCC = resultSet.getLong(1);
+                int CVV2 = resultSet.getInt(2);
+                Date expireDate = resultSet.getDate(3);
+                int pass = resultSet.getInt(4);
+                int accountID=resultSet.getInt(5);
+                int wrongPassEntries=resultSet.getInt(6);
 
+                creditCard.setCcNumber(numberOfCC);
+                creditCard.setCVV2(CVV2);
+                creditCard.setExpireDate(expireDate);
+                creditCard.setPasscode(pass);
+                creditCard.setWrongPasswordEntries(wrongPassEntries);
+
+            }
+            preparedStatement.close();
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(select);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        preparedStatement.close();
+
+
         return creditCard;
 
     }
@@ -125,18 +153,26 @@ public class CreditCardRepo {
 
 
     //wrong password entry
-    public int wrongPasswordEntry(long ccNumber) throws SQLException, ClassNotFoundException {
-        String wrongEntry="update creditCard set wrongPasswordEntries=wrongPasswordEntries+1 where ccNumber=? returning wronpasswordentries";
+    public int wrongPasswordEntry(long ccNumber)  {
+        String wrongEntry="update creditCard set wrongPasswordEntries=wrongPasswordEntries+1 where ccNumber=? returning wrongpasswordentries";
 
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(wrongEntry);
-        preparedStatement.setLong(1,ccNumber);
-        ResultSet resultSet=preparedStatement.executeQuery();
+        int numberOfWrongEntries=0;
+        PreparedStatement preparedStatement= null;
+        try {
 
-        resultSet.next();
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(wrongEntry);
+            preparedStatement.setLong(1,ccNumber);
+            ResultSet resultSet=preparedStatement.executeQuery();
 
-        int numberOfWrongEntries=resultSet.getInt(1);
-        preparedStatement.close();
+            resultSet.next();
 
+            numberOfWrongEntries=resultSet.getInt(1);
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         return numberOfWrongEntries;
     }
 }

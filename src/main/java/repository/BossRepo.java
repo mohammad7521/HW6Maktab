@@ -3,6 +3,7 @@ package repository;
 import connection.ConnectionProvider;
 import model.BranchBoss;
 import model.Employee;
+import org.postgresql.util.PSQLException;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -22,22 +23,28 @@ public class BossRepo {
 
 
     //add a boss
-    public boolean add(String firstName, String lastName, char gender,String address,int branchID) throws SQLException, ClassNotFoundException {
+    public boolean add(String firstName, String lastName,String address,int branchID) throws PSQLException {
 
-        String insert="insert into boss(firstName, lastName, gender, address, branchID) values (?,?,?,?,?)";
+        String insert="insert into boss(firstName, lastName, address, branchID) values (?,?,?,?)";
 
-        PreparedStatement preparedStatement= ConnectionProvider.setConnection().prepareStatement(insert);
+        int insertCheck=0;
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(insert);
+            preparedStatement.setString(1,firstName);
+            preparedStatement.setString(2,lastName);
+            preparedStatement.setString(3,address);
+            preparedStatement.setInt(4,branchID);
 
-        preparedStatement.setString(1,firstName);
-        preparedStatement.setString(2,lastName);
-        preparedStatement.setString(3,String.valueOf(gender));
-        preparedStatement.setString(4,address);
-        preparedStatement.setInt(5,branchID);
 
+            insertCheck=preparedStatement.executeUpdate();
 
-        int insertCheck=preparedStatement.executeUpdate();
-
-        preparedStatement.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         return insertCheck>0;
     }
@@ -45,17 +52,24 @@ public class BossRepo {
 
 
     //remove a boss
-    public boolean remove(int bossID) throws SQLException, ClassNotFoundException {
+    public boolean remove(int bossID) {
 
         String remove="DELETE FROM boss WHERE bossid=(?)";
 
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(remove);
+        int removeCheck=0;
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(remove);
+            preparedStatement.setInt(1,bossID);
 
-        preparedStatement.setInt(1,bossID);
+            removeCheck=preparedStatement.executeUpdate();
 
-        int removeCheck=preparedStatement.executeUpdate();
-
-        preparedStatement.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         return removeCheck >0;
     }
@@ -63,49 +77,67 @@ public class BossRepo {
 
 
     //update info of a boss
-    public boolean update(int bossID,String firstName,String lastName,String address) throws SQLException, ClassNotFoundException {
+    public boolean update(int bossID,String firstName,String lastName,String address) {
         String update="UPDATE boss SET firstname=?,lastname=?,address=? WHERE bossid=?";
 
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
+        int updateCheck=0;
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(update);
+            preparedStatement.setString(1,firstName);
+            preparedStatement.setString(2,lastName);
+            preparedStatement.setString(3,address);
+            preparedStatement.setInt(4,bossID);
 
-        preparedStatement.setString(1,firstName);
-        preparedStatement.setString(2,lastName);
-        preparedStatement.setString(3,address);
-        preparedStatement.setInt(4,bossID);
+            updateCheck=preparedStatement.executeUpdate();
 
-        int updateCheck=preparedStatement.executeUpdate();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        preparedStatement.close();
+
 
         return updateCheck >0;
     }
 
 
     //show info of a boss
-    public BranchBoss showInfo(int bossID) throws SQLException, ClassNotFoundException {
+    public BranchBoss showInfo(int bossID) {
         String showInfo="SELECT * FROM boss where bossid=?";
 
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
-        preparedStatement.setInt(1,bossID);
-        ResultSet resultSet=preparedStatement.executeQuery();
-
         BranchBoss branchBoss=new BranchBoss();
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(showInfo);
+            preparedStatement.setInt(1,bossID);
+            ResultSet resultSet=preparedStatement.executeQuery();
 
-        while (resultSet.next()){
-            int id=resultSet.getInt(1);
-            String firstName=resultSet.getString(2);
-            String lastName=resultSet.getString(3);
-            String gender=resultSet.getString(4);
-            String address=resultSet.getString(5);
-            int branchID=resultSet.getInt(6);
 
-            branchBoss.setId(id);
-            branchBoss.setFirstName(firstName);
-            branchBoss.setLastName(lastName);
-            branchBoss.setGender(gender.charAt(0));
-            branchBoss.setAddress(address);
-        }
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String firstName = resultSet.getString(2);
+                String lastName = resultSet.getString(3);
+                String address = resultSet.getString(4);
+                int branchID = resultSet.getInt(5);
+
+                branchBoss.setId(id);
+                branchBoss.setFirstName(firstName);
+                branchBoss.setLastName(lastName);
+                branchBoss.setAddress(address);
+                branchBoss.setBranchID(branchID);
+
+            }
+            } catch(SQLException e){
+                e.printStackTrace();
+            } catch(ClassNotFoundException e){
+                e.printStackTrace();
+            }
 
         return branchBoss;
-    }
+        }
+
 }

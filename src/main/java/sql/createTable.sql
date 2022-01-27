@@ -38,8 +38,7 @@ CREATE TABLE IF NOT EXISTS client(
          clientID serial primary key,
          firstname varchar(20),
          lastName varchar(20),
-         address varchar(30),
-         gender char
+         address varchar(30)
 );
 
 

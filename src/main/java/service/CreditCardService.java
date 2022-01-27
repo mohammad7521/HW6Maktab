@@ -1,12 +1,11 @@
 package service;
 import model.Account;
-import model.Client;
 import model.CreditCard;
-import repository.AccountRepo;
 import repository.CreditCardRepo;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
+
 
 public class CreditCardService {
 
@@ -24,17 +23,21 @@ public class CreditCardService {
 
 
     //add a new credit card
-    public static boolean addNew(int accountID) throws SQLException, ParseException, ClassNotFoundException {
+    public static boolean addNew(int accountID){
 
         CreditCard creditCard=new CreditCard();
-        creditCard.createRandomCreditCard();
+        try {
+            creditCard.createRandomCreditCard();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return creditCardRepo.generate(creditCard.getCcNumber(),creditCard.getCVV2(), (Date) creditCard.getExpireDate(),creditCard.getPasscode(),accountID);
 
     }
 
 
     //remove a credit card
-    public static boolean remove(int ccNumber) throws SQLException, ParseException, ClassNotFoundException {
+    public static boolean remove(int ccNumber)    {
 
         CreditCard cc=creditCardRepo.showInfo(ccNumber);
         if (cc==null){
@@ -45,7 +48,7 @@ public class CreditCardService {
 
 
     //change password of a credit card
-    public static boolean changeCCPassword(int newPassword,int oldPassword,long ccNumber) throws SQLException, ParseException, ClassNotFoundException {
+    public static boolean changeCCPassword(int newPassword,int oldPassword,long ccNumber)  {
 
         boolean flag=false;
         CreditCard creditCard=showInfo(ccNumber);
@@ -63,40 +66,69 @@ public class CreditCardService {
 
 
     //show credit card info
-    public static CreditCard showInfo(long ccNumber) throws SQLException, ParseException, ClassNotFoundException {
+    public static CreditCard showInfo(long ccNumber)  {
         CreditCard creditCard=creditCardRepo.showInfo(ccNumber);
         return creditCard;
     }
 
 
 
+
+    //credit card password check
+    public static boolean passwordCheck(int password,int accountID)  {
+        Account account=AccountService.showInfo(accountID);
+        long ccNumber=account.getCreditCardNumber();
+        CreditCard creditCard=showInfo(ccNumber);
+        return creditCard.getPasscode()==password;
+    }
+
+
+
+
     //card to card service
-    public static void cardToCard (long ccNumber,long destinationCCNumber,int amount,
-                                     String description,int password,int cvv2) throws SQLException, ParseException, ClassNotFoundException {
+    public static void cardToCard (long ccNumber,long destinationCCNumber,long amount,
+                                     String description,int password,int cvv2)   {
 
         CreditCard creditCard = showInfo(ccNumber);
-        java.util.Date expireDate = creditCard.getExpireDate();
         java.util.Date date = new java.util.Date();
         Date now = new Date(date.getTime());
         int wrongEntries = creditCard.getWrongPasswordEntries();
-        System.out.println("wrong password entries: " + wrongEntries);
-
+        if (wrongEntries > 0) {
+            System.out.println("you have entered your password wrong for " + wrongEntries+" times");
+        }
         if (wrongEntries < 3) {
             if (password == creditCard.getPasscode()) {
-                if (creditCard.getExpireDate().compareTo(now) > 0 && cvv2 == creditCard.getCVV2()){
-                boolean deductionCheck = AccountService.deduction(amount, ccNumber);
-                boolean additionCheck = AccountService.addition(amount, destinationCCNumber);
+                if (creditCard.getExpireDate().compareTo(now) > 0 && cvv2 == creditCard.getCVV2()) {
+                    boolean deductionCheck = AccountService.deduction(amount, ccNumber);
+                    boolean additionCheck = AccountService.addition(amount, destinationCCNumber);
 
-                if (deductionCheck) {
-                    if (additionCheck) {
-                        if (TransactionService.createTransaction(ccNumber, destinationCCNumber, amount, description)) {
-                            System.out.println("transaction successful! ");
+                    if (deductionCheck) {
+                        if (additionCheck) {
+                            if (TransactionService.createTransaction(ccNumber, destinationCCNumber, amount, description)) {
+                                System.out.println("transaction successful! ");
+                            }
                         }
-                    }
                     } else System.out.println("not enough balance! ");
                 } else System.out.println("wrong cvv2 or card is expired!");
-            } else System.out.println("wrong password!");
-            System.out.println(creditCardRepo.wrongPasswordEntry(ccNumber));
-        }else System.out.println("sorry! too many wrong passwords! ");
+            } else {
+                System.out.println("wrong password!");
+                try {
+                    System.out.println("warning! wrong password entries: " + wrongPasswordEntry(ccNumber));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        } else System.out.println("sorry! too many wrong passwords! ");
+    }
+
+
+
+    //entering wrong password
+    public static int wrongPasswordEntry(long ccNumber) throws SQLException, ClassNotFoundException {
+
+        return creditCardRepo.wrongPasswordEntry(ccNumber);
     }
 }

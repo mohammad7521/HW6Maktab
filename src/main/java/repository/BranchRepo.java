@@ -10,26 +10,39 @@ import java.sql.SQLException;
 
 public class BranchRepo {
 
-    public BranchRepo() throws SQLException, ClassNotFoundException {
-        ConnectionProvider.setConnection();
+    public BranchRepo() {
+        try {
+            ConnectionProvider.setConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 
 
     //add a branch
-    public boolean add(String name,String address) throws SQLException, ClassNotFoundException {
+    public boolean add(String name,String address) {
 
         String insert="INSERT INTO branch (name,address) values(?,?)";
 
-        PreparedStatement preparedStatement= ConnectionProvider.setConnection().prepareStatement(insert);
+        int insertCheck=0;
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(insert);
+            preparedStatement.setString(1,name);
+            preparedStatement.setString(2,address);
 
-        preparedStatement.setString(1,name);
-        preparedStatement.setString(2,address);
 
+            insertCheck=preparedStatement.executeUpdate();
 
-        int insertCheck=preparedStatement.executeUpdate();
-
-        preparedStatement.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         return insertCheck>0;
     }
@@ -37,17 +50,27 @@ public class BranchRepo {
 
 
     //remove a branch
-    public boolean remove(int branchID) throws SQLException, ClassNotFoundException {
+    public boolean remove(int branchID) {
 
         String remove="DELETE FROM branch WHERE branchid=(?)";
 
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(remove);
+        int removeCheck=0;
 
-        preparedStatement.setInt(1,branchID);
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(remove);
+            preparedStatement.setInt(1,branchID);
 
-        int removeCheck=preparedStatement.executeUpdate();
+            removeCheck=preparedStatement.executeUpdate();
 
-        preparedStatement.close();
+            preparedStatement.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
 
         return removeCheck >0;
     }
@@ -55,42 +78,58 @@ public class BranchRepo {
 
 
     //update info of a branch
-    public boolean update(int branchID,String name,String address) throws SQLException, ClassNotFoundException {
+    public boolean update(int branchID,String name,String address)  {
         String update="UPDATE branch SET name=?,address=? WHERE branchid=?";
 
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(update);
+        int updateCheck=0;
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(update);
 
-        preparedStatement.setString(1,name);
-        preparedStatement.setString(2,address);
-        preparedStatement.setInt(3,branchID);
+            preparedStatement.setString(1,name);
+            preparedStatement.setString(2,address);
+            preparedStatement.setInt(3,branchID);
 
-        int updateCheck=preparedStatement.executeUpdate();
+            updateCheck=preparedStatement.executeUpdate();
 
-        preparedStatement.close();
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
 
         return updateCheck >0;
     }
 
 
     //show branch info
-    public Branch showInfo (int branchID) throws SQLException, ClassNotFoundException {
+    public Branch showInfo (int branchID) {
         String showInfo="SELECT * FROM branch where branchid=(?)";
 
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showInfo);
-        preparedStatement.setInt(1,branchID);
-        ResultSet resultSet=preparedStatement.executeQuery();
-
         Branch branch=new Branch();
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(showInfo);
+            preparedStatement.setInt(1,branchID);
+            ResultSet resultSet=preparedStatement.executeQuery();
 
-        while (resultSet.next()){
-            int id=resultSet.getInt(1);
-            String name=resultSet.getString(2);
-            String address=resultSet.getString(3);
 
-            branch.setId(id);
-            branch.setName(name);
-            branch.setAddress(address);
 
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                String address = resultSet.getString(3);
+
+                branch.setId(id);
+                branch.setName(name);
+                branch.setAddress(address);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
 
         return branch;

@@ -13,29 +13,42 @@ import java.util.List;
 
 public class TransactionRepo {
 
-    public TransactionRepo() throws SQLException, ClassNotFoundException {
-        ConnectionProvider.setConnection();
+    public TransactionRepo() {
+        try {
+            ConnectionProvider.setConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 
 
     //add a transaction
-    public boolean add(Date date, long ccNumber, long destinationCCNumber, int amount,String description) throws SQLException, ClassNotFoundException {
+    public boolean add(Date date, long ccNumber, long destinationCCNumber, long amount,String description)  {
 
         String insert="INSERT INTO transaction (date,amount,ccnumber,ccnumberdestination,description) values(?,?,?,?,?)";
 
-        PreparedStatement preparedStatement= ConnectionProvider.setConnection().prepareStatement(insert);
+        int insertCheck=0;
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(insert);
+            preparedStatement.setDate(1,date);
+            preparedStatement.setLong(2,amount);
+            preparedStatement.setLong(3,ccNumber);
+            preparedStatement.setLong(4,destinationCCNumber);
+            preparedStatement.setString(5,description);
 
-        preparedStatement.setDate(1,date);
-        preparedStatement.setInt(2,amount);
-        preparedStatement.setLong(3,ccNumber);
-        preparedStatement.setLong(4,destinationCCNumber);
-        preparedStatement.setString(5,description);
+            insertCheck=preparedStatement.executeUpdate();
 
+            preparedStatement.close();
 
-        int insertCheck=preparedStatement.executeUpdate();
-
-        preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         return insertCheck>0;
     }
@@ -43,91 +56,132 @@ public class TransactionRepo {
 
 
     //transaction fee transaction
-    public boolean addTransactionFee(Date date, long ccNumber, int amount,String description) throws SQLException, ClassNotFoundException {
+    public boolean addTransactionFee(Date date, long ccNumber, long amount,String description) {
 
         String insert="INSERT INTO transaction (date,amount,ccnumber,description) values(?,?,?,?)";
 
-        PreparedStatement preparedStatement= ConnectionProvider.setConnection().prepareStatement(insert);
+        int insertCheck=0;
+        PreparedStatement preparedStatement= null;
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(insert);
+            preparedStatement.setDate(1,date);
+            preparedStatement.setLong(2,amount);
+            preparedStatement.setLong(3,ccNumber);
+            preparedStatement.setString(4,description);
 
-        preparedStatement.setDate(1,date);
-        preparedStatement.setInt(2,amount);
-        preparedStatement.setLong(3,ccNumber);
-        preparedStatement.setString(4,description);
+            insertCheck=preparedStatement.executeUpdate();
+
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
-        int insertCheck=preparedStatement.executeUpdate();
-
-        preparedStatement.close();
 
         return insertCheck>0;
     }
 
 
     //show transactions list based on creditCardNumber
-    public List<Transaction> showList(int accountID) throws SQLException, ClassNotFoundException {
+    public List<Transaction> showList(int accountID) {
 
-        Account account= AccountService.showInfo(accountID);
+        Account account= null;
+        try {
+            account = AccountService.showInfo(accountID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         long ccNumber=account.getCreditCardNumber();
 
         String showList="SELECT * FROM transaction where ccnumber=?";
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showList);
-        preparedStatement.setLong(1,ccNumber);
-
-        ResultSet resultSet=preparedStatement.executeQuery();
-
+        PreparedStatement preparedStatement= null;
         List<Transaction> transactionList=new ArrayList<>();
 
-        while (resultSet.next()){
-            Transaction transaction=new Transaction();
-            int transactionID=resultSet.getInt(1);
-            Date transactionDate=resultSet.getDate(2);
-            int amount=resultSet.getInt(3);
-            long from=resultSet.getLong(4);
-            long to=resultSet.getLong(5);
-            String description=resultSet.getString(6);
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(showList);
+            preparedStatement.setLong(1,ccNumber);
 
-            transaction.setId(transactionID);
-            transaction.setDate(transactionDate);
-            transaction.setAmount(amount);
-            transaction.setCreditCard(from);
-            transaction.setDestinationCC(to);
-            transaction.setDescription(description);
-            transactionList.add(transaction);
+            ResultSet resultSet=preparedStatement.executeQuery();
+
+
+
+            while (resultSet.next()) {
+                Transaction transaction = new Transaction();
+                int transactionID = resultSet.getInt(1);
+                Date transactionDate = resultSet.getDate(2);
+                long amount = resultSet.getLong(3);
+                long from = resultSet.getLong(4);
+                long to = resultSet.getLong(5);
+                String description = resultSet.getString(6);
+
+                transaction.setId(transactionID);
+                transaction.setDate(transactionDate);
+                transaction.setAmount(amount);
+                transaction.setCreditCard(from);
+                transaction.setDestinationCC(to);
+                transaction.setDescription(description);
+                transactionList.add(transaction);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return transactionList;
     }
 
 
     //show transaction based on date
-    public List<Transaction> showList(int accountID,Date startDate) throws SQLException, ClassNotFoundException {
+    public List<Transaction> showList(int accountID,Date startDate) {
 
-        Account account= AccountService.showInfo(accountID);
+        Account account= null;
+        try {
+            account = AccountService.showInfo(accountID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         long ccNumber=account.getCreditCardNumber();
 
         String showList="select * from transaction where ccNumber=(?) and date>=(?)";
-        PreparedStatement preparedStatement=ConnectionProvider.setConnection().prepareStatement(showList);
-        preparedStatement.setLong(1,ccNumber);
-        preparedStatement.setDate(2,startDate);
-        ResultSet resultSet=preparedStatement.executeQuery();
-
+        PreparedStatement preparedStatement= null;
         List<Transaction> transactionList=new ArrayList<>();
 
-        while (resultSet.next()){
-            Transaction transaction=new Transaction();
-            int transactionID=resultSet.getInt(1);
-            Date transactionDate=resultSet.getDate(2);
-            int amount=resultSet.getInt(3);
-            long from=resultSet.getLong(4);
-            long to=resultSet.getLong(5);
-            String description=resultSet.getString(6);
+        try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(showList);
+            preparedStatement.setLong(1,ccNumber);
+            preparedStatement.setDate(2,startDate);
+            ResultSet resultSet=preparedStatement.executeQuery();
 
-            transaction.setId(transactionID);
-            transaction.setDate(transactionDate);
-            transaction.setAmount(amount);
-            transaction.setCreditCard(from);
-            transaction.setDestinationCC(to);
-            transaction.setDescription(description);
-            transactionList.add(transaction);
+
+
+            while (resultSet.next()) {
+                Transaction transaction = new Transaction();
+                int transactionID = resultSet.getInt(1);
+                Date transactionDate = resultSet.getDate(2);
+                long amount = resultSet.getLong(3);
+                long from = resultSet.getLong(4);
+                long to = resultSet.getLong(5);
+                String description = resultSet.getString(6);
+
+                transaction.setId(transactionID);
+                transaction.setDate(transactionDate);
+                transaction.setAmount(amount);
+                transaction.setCreditCard(from);
+                transaction.setDestinationCC(to);
+                transaction.setDescription(description);
+                transactionList.add(transaction);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return transactionList;
     }

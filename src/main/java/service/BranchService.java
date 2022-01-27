@@ -10,25 +10,20 @@ public class BranchService {
     private static BranchRepo branchRepo;
 
     static {
-        try {
-            branchRepo = new BranchRepo();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        branchRepo = new BranchRepo();
+
     }
 
 
     //add new branch
-    public static boolean addNew(String name,String address) throws SQLException, ClassNotFoundException {
+    public static boolean addNew(String name,String address) {
 
         return branchRepo.add(name,address);
     }
 
 
     //remove a branch
-    public static boolean remove(int branchID) throws SQLException, ClassNotFoundException {
+    public static boolean remove(int branchID)  {
 
         Branch branch=branchRepo.showInfo(branchID);
 
@@ -41,7 +36,7 @@ public class BranchService {
 
 
     //modify a branch
-    public static boolean modify(int branchID,String name,String address) throws SQLException, ClassNotFoundException {
+    public static boolean modify(int branchID,String name,String address)  {
 
         Branch branch=branchRepo.showInfo(branchID);
 
@@ -50,5 +45,12 @@ public class BranchService {
         }
 
         return branchRepo.update(branchID,name,address);
+    }
+
+
+
+    //show info of a branch
+    public static Branch showInfo(int branchID)  {
+        return branchRepo.showInfo(branchID);
     }
 }
