@@ -40,7 +40,7 @@ public class CreditCardService {
     public static boolean remove(int ccNumber)    {
 
         CreditCard cc=creditCardRepo.showInfo(ccNumber);
-        if (cc==null){
+        if (cc.getCcNumber()==0){
             return false;
         }
         else return creditCardRepo.remove(ccNumber);
@@ -67,6 +67,7 @@ public class CreditCardService {
 
     //show credit card info
     public static CreditCard showInfo(long ccNumber)  {
+
         CreditCard creditCard=creditCardRepo.showInfo(ccNumber);
         return creditCard;
     }

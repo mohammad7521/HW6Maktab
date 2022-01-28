@@ -4,6 +4,7 @@ import connection.ConnectionProvider;
 import model.Account;
 import model.Client;
 import model.CreditCard;
+import service.AccountService;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -116,8 +117,8 @@ public class CreditCardRepo {
 
         CreditCard creditCard=new CreditCard();
         try {
+            preparedStatement = ConnectionProvider.setConnection().prepareStatement(select);
             preparedStatement.setLong(1,ccNumber);
-
             ResultSet resultSet=preparedStatement.executeQuery();
 
             while(resultSet.next()) {
@@ -134,10 +135,10 @@ public class CreditCardRepo {
                 creditCard.setExpireDate(expireDate);
                 creditCard.setPasscode(pass);
                 creditCard.setWrongPasswordEntries(wrongPassEntries);
+                creditCard.setAccount(AccountService.showInfo(accountID));
 
             }
             preparedStatement.close();
-            preparedStatement = ConnectionProvider.setConnection().prepareStatement(select);
 
         } catch (SQLException e) {
             e.printStackTrace();

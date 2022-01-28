@@ -88,13 +88,9 @@ public class TransactionRepo {
     public List<Transaction> showList(int accountID) {
 
         Account account= null;
-        try {
-            account = AccountService.showInfo(accountID);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+
+        account = AccountService.showInfo(accountID);
+
         long ccNumber=account.getCreditCardNumber();
 
         String showList="SELECT * FROM transaction where ccnumber=?";
@@ -139,13 +135,7 @@ public class TransactionRepo {
     public List<Transaction> showList(int accountID,Date startDate) {
 
         Account account= null;
-        try {
-            account = AccountService.showInfo(accountID);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        account = AccountService.showInfo(accountID);
 
         long ccNumber=account.getCreditCardNumber();
 

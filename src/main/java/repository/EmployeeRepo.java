@@ -34,7 +34,7 @@ public class EmployeeRepo {
             preparedStatement.setString(3,address);
             preparedStatement.setInt(4,bossID);
 
-            preparedStatement.executeUpdate();
+            insertCheck=preparedStatement.executeUpdate();
 
             preparedStatement.close();
         } catch (SQLException e) {

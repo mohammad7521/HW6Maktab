@@ -140,7 +140,7 @@ public class ClientRepo {
                 String lastName = resultSet.getString(3);
                 String address = resultSet.getString(4);
                 int accountID=resultSet.getInt(5);
-                int balance=resultSet.getInt(6);
+                long balance=resultSet.getLong(6);
 
                 client.setId(id);
                 client.setFirstName(firstName);

@@ -222,6 +222,7 @@ public class AdminConsole {
                                 scanner.nextLine();
                                 if (EmployeeService.addNew(firstName, lastName, address, bossID)) {
                                     System.out.println("employee has been added successfully! ");
+                                    break;
                                 }else System.out.println("boss id does not exist ! ");
                                 break;
                             } catch (InputMismatchException e) {

@@ -28,7 +28,7 @@ public class MainConsole {
                         break;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("please enter a number!");
+                System.out.println("please enter a valid number!");
             }
         }
     }

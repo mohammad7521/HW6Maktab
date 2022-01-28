@@ -55,9 +55,15 @@ public class ClientConsole {
                         long amount = scanner.nextLong();
                         System.out.println("enter destination ccNumber");
                         long destinationCC = scanner.nextLong();
-                        CreditCard creditCard = CreditCardService.showInfo(destinationCC);
-                        if (creditCard.getCcNumber() != destinationCC) {
-                            System.out.println("destination credit card number wrong!");
+                        try {
+
+                            CreditCard creditCard = CreditCardService.showInfo(destinationCC);
+                            if (creditCard.getCcNumber() != destinationCC) {
+                                System.out.println("destination credit card number wrong!");
+                                break;
+                            }
+                        }catch (NullPointerException e){
+                            System.out.println("credit card number does not exist");
                             break;
                         }
                         System.out.println("enter your cvv2");
@@ -77,14 +83,19 @@ public class ClientConsole {
                         ClientService.showTransactionList(accountID);
                         break;
                     case 4:
-                        ClientService.showAccountList(id);
-                        System.out.println("enter starting date in the following format");
-                        System.out.println("yyyy-mm-dd");
-                        Date startDate = Date.valueOf(scanner.next());
-                        System.out.println("enter the account id");
-                        accountID = scanner.nextInt();
-                        ClientService.showTransactionList(accountID, startDate);
-                        break;
+                        try {
+                            ClientService.showAccountList(id);
+                            System.out.println("enter starting date in the following format");
+                            System.out.println("yyyy-mm-dd");
+                            Date startDate = Date.valueOf(scanner.next());
+                            System.out.println("enter the account id");
+                            accountID = scanner.nextInt();
+                            ClientService.showTransactionList(accountID, startDate);
+                            break;
+                        }catch (IllegalArgumentException e){
+                            System.out.println("please enter the date in the correct format");
+                            break;
+                        }
                     case 5:
                         ClientService.showAccountList(id);
                         System.out.println("enter the account id");
@@ -125,7 +136,7 @@ public class ClientConsole {
                 }
             }
         }catch(InputMismatchException e ){
-            System.out.println("please enter a number ! ");
+            System.out.println("please enter a valid number ! ");
         }
     }
 }
