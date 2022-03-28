@@ -11,115 +11,99 @@ import java.sql.SQLException;
 
 public class EmployeeRepo {
     public EmployeeRepo() {
-        try {
-            ConnectionProvider.setConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        ConnectionProvider.setConnection();
     }
 
     //add an employee
-    public boolean add(String firstName, String lastName,String address,int bossID) {
+    public boolean add(String firstName, String lastName, String address, int bossID) {
 
-        String insert="INSERT INTO EMPLOYEE(firstname,lastname,address,bossid) VALUES(?,?,?,?)";
+        String insert = "INSERT INTO EMPLOYEE(firstname,lastname,address,bossid) VALUES(?,?,?,?)";
 
-        int insertCheck=0;
-        PreparedStatement preparedStatement= null;
+        int insertCheck = 0;
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = ConnectionProvider.setConnection().prepareStatement(insert);
-            preparedStatement.setString(1,firstName);
-            preparedStatement.setString(2,lastName);
-            preparedStatement.setString(3,address);
-            preparedStatement.setInt(4,bossID);
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setString(3, address);
+            preparedStatement.setInt(4, bossID);
 
-            insertCheck=preparedStatement.executeUpdate();
+            insertCheck = preparedStatement.executeUpdate();
 
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
 
-
-        return insertCheck>0;
+        return insertCheck > 0;
     }
-
 
 
     //remove an employee
     public boolean remove(int employeeID) {
 
-        String remove="DELETE FROM employee WHERE employeeID=?";
+        String remove = "DELETE FROM employee WHERE employeeID=?";
 
-        int removeCheck=0;
-        PreparedStatement preparedStatement= null;
+        int removeCheck = 0;
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = ConnectionProvider.setConnection().prepareStatement(remove);
-            preparedStatement.setInt(1,employeeID);
+            preparedStatement.setInt(1, employeeID);
 
-            removeCheck=preparedStatement.executeUpdate();
+            removeCheck = preparedStatement.executeUpdate();
 
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
-        return removeCheck >0;
+        return removeCheck > 0;
     }
 
 
-
     //update info of an employee
-    public boolean update(int employeeID,String firstName, String lastName,String address)  {
-        String update="UPDATE employee SET firstname=?,lastname=?,address=? WHERE employeeid=?";
+    public boolean update(int employeeID, String firstName, String lastName, String address) {
+        String update = "UPDATE employee SET firstname=?,lastname=?,address=? WHERE employeeid=?";
 
-        int updateCheck=0;
-        PreparedStatement preparedStatement= null;
+        int updateCheck = 0;
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = ConnectionProvider.setConnection().prepareStatement(update);
-            preparedStatement.setString(1,firstName);
-            preparedStatement.setString(2,lastName);
-            preparedStatement.setString(3,address);
-            preparedStatement.setInt(4,employeeID);
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+            preparedStatement.setString(3, address);
+            preparedStatement.setInt(4, employeeID);
 
-            updateCheck=preparedStatement.executeUpdate();
+            updateCheck = preparedStatement.executeUpdate();
             preparedStatement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
-        return updateCheck >0;
+        return updateCheck > 0;
     }
 
 
     //show employee info
-    public Employee showInfo(int employeeID)  {
+    public Employee showInfo(int employeeID) {
 
-        String showInfo="SELECT * FROM employee where employeeid=?";
+        String showInfo = "SELECT * FROM employee where employeeid=?";
 
-        Employee employee=new Employee();
-        PreparedStatement preparedStatement= null;
+        Employee employee = new Employee();
+        PreparedStatement preparedStatement = null;
         try {
             preparedStatement = ConnectionProvider.setConnection().prepareStatement(showInfo);
-            preparedStatement.setInt(1,employeeID);
-            ResultSet resultSet=preparedStatement.executeQuery();
+            preparedStatement.setInt(1, employeeID);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
 
-
-            while (resultSet.next()){
-                int id=resultSet.getInt(1);
-                String firstName=resultSet.getString(2);
-                String lastName=resultSet.getString(3);
-                String address=resultSet.getString(4);
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String firstName = resultSet.getString(2);
+                String lastName = resultSet.getString(3);
+                String address = resultSet.getString(4);
 
 
                 employee.setId(id);
@@ -129,8 +113,6 @@ public class EmployeeRepo {
 
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 

@@ -8,11 +8,7 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException, ParseException {
+    public static void main(String[] args)  {
         MainConsole.mainMenu();
-
-
     }
-
-
 }

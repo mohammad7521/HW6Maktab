@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class MainConsole {
 
-    public static void mainMenu() throws SQLException, ClassNotFoundException, ParseException {
+    public static void mainMenu() {
 
         while (true) {
             System.out.println("1-Admin: ");

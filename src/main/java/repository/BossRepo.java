@@ -13,7 +13,7 @@ import java.sql.SQLException;
 
 public class BossRepo {
 
-    public BossRepo() throws SQLException, ClassNotFoundException {
+    public BossRepo() {
         ConnectionProvider.setConnection();
     }
 
@@ -42,8 +42,6 @@ public class BossRepo {
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
         return insertCheck>0;
@@ -66,8 +64,6 @@ public class BossRepo {
 
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -93,8 +89,6 @@ public class BossRepo {
 
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -132,8 +126,6 @@ public class BossRepo {
 
             }
             } catch(SQLException e){
-                e.printStackTrace();
-            } catch(ClassNotFoundException e){
                 e.printStackTrace();
             }
 

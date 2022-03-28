@@ -10,7 +10,7 @@ import java.sql.*;
 public class AccountRepo {
 
 
-    public AccountRepo() throws SQLException, ClassNotFoundException {
+    public AccountRepo() {
         ConnectionProvider.setConnection();
     }
 
@@ -48,8 +48,6 @@ public class AccountRepo {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
         return account;
@@ -73,8 +71,6 @@ public class AccountRepo {
             preparedStatement.close();
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -100,8 +96,6 @@ public class AccountRepo {
 
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -131,8 +125,6 @@ public class AccountRepo {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
         return updateCheck >0;
@@ -155,8 +147,6 @@ public class AccountRepo {
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return updateCheck >0;
     }
@@ -178,8 +168,6 @@ public class AccountRepo {
 
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -223,8 +211,6 @@ public class AccountRepo {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
         return account;
@@ -257,10 +243,7 @@ public class AccountRepo {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-
         return account;
     }
 

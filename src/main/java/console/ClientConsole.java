@@ -14,7 +14,7 @@ import java.util.Scanner;
 
 public class ClientConsole {
 
-    public static void clientMenu() throws SQLException, ClassNotFoundException, ParseException {
+    public static void clientMenu() {
 
 
         try {

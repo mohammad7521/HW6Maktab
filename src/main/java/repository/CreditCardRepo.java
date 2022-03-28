@@ -16,7 +16,7 @@ import java.util.List;
 
 public class CreditCardRepo {
 
-    public CreditCardRepo() throws SQLException, ClassNotFoundException {
+    public CreditCardRepo() {
         ConnectionProvider.setConnection();
     }
 
@@ -48,8 +48,6 @@ public class CreditCardRepo {
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
         return checkInsert;
@@ -73,8 +71,6 @@ public class CreditCardRepo {
             preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
 
         return removeCheck >0;
@@ -97,8 +93,6 @@ public class CreditCardRepo {
 
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -142,10 +136,7 @@ public class CreditCardRepo {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-
 
         return creditCard;
 
@@ -170,8 +161,6 @@ public class CreditCardRepo {
             numberOfWrongEntries=resultSet.getInt(1);
             preparedStatement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return numberOfWrongEntries;

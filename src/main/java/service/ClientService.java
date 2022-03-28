@@ -153,7 +153,7 @@ public class ClientService {
 
 
     //withdraw money from a specific account
-    public static void withDraw(int accountID,long amount,int password) throws SQLException, ClassNotFoundException, ParseException {
+    public static void withDraw(int accountID,long amount,int password){
 
         Account account=AccountService.showInfo(accountID);
         CreditCard cc=CreditCardService.showInfo(account.getCreditCardNumber());
